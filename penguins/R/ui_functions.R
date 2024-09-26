@@ -97,9 +97,20 @@ main <- function(df) {
                                 Data on penguins are publicly available through 
                                 the <i>palmerpenguins</i> R package.
                                 Data for names, foods, and swim speeds were 
-                                made up for an RCamp exercise.")),
+                                made up for an
+                <a href='https://tidy-mn.github.io/R-camp-penguins/'>RCamp</a>
+                                exercise.")),
                          br(), 
-                         htmlOutput("sources")),
+                         htmlOutput("sources"),
+                         p(HTML("This dashboard was created by 
+                                <a href='https://github.com/ajstamm'>Abigail 
+                                Stamm</a>
+                                as an example dashboard for the presentations 
+                                <i>Making data visualizations accessible</i> 
+                                and <i>Creating accessible dashboards using 
+                                R Shiny</i> as part of
+                                <a href='https://mn.gov/dhs/equity-week/'>MN 
+                                DHS Equity Week 2024</a>."))),
                 tabPanel("Individual data", br(), br(),
                          DT::dataTableOutput("all_penguins")),
                 tabPanel("Summary data", br(), br(),
