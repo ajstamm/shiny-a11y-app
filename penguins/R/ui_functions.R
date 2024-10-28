@@ -5,24 +5,25 @@
 sidebar <- function(df) {
   sidebarPanel(
     h3("Instructions"),
-    HTML(paste("Please select your desired filters from the options provided",
-               "for each tab.",
-               "Content will update as you make changes.")),
+    p("Please select your desired filters from the options provided for each 
+       tab. Content will update as you make changes."),
     br(), br(),
-    conditionalPanel(condition = "input.tabs == 'Text formatting'",
+    # tab_text ----
+    conditionalPanel(condition = "input.my_tabs == 'tab_text'",
       textInput("font_size", placeholder = "12px", value = "12px", 
-                label = HTML("Enter desired font size in pixels:")),
+                label = p("Enter desired font size in pixels:")),
       textInput("letter_spacing", placeholder = "1px", value = "1px", 
-                label = HTML("Enter desired letter spacing in pixels:")),
-      selectInput("text_color", label = HTML("Select desired font color:"),
+                label = p("Enter desired letter spacing in pixels:")),
+      selectInput("text_color", label = p("Select desired font color:"),
                   choices = c("black", "red", "orange", "yellow", "green", 
                               "blue", "purple", "white"), 
                   selectize = FALSE, selected = "black")
     ),
-    conditionalPanel(condition = "input.tabs == 'Individual data' |
-                                  input.tabs == 'Summary data' |
-                                  input.tabs == 'Bar chart' |
-                                  input.tabs == 'Line chart'",
+    # tab_indiv, tab_sum, tab_line, or tab_bar ----
+    conditionalPanel(condition = "input.my_tabs == 'tab_indiv' |
+                                  input.my_tabs == 'tab_sum' |
+                                  input.my_tabs == 'tab_line' |
+                                  input.my_tabs == 'tab_bar'", # Individual data
       selectInput("species", label = "Select desired species:", 
                   choices = c("All", unique(df$species)),
                   selectize = FALSE, selected = "All"),
@@ -40,7 +41,7 @@ sidebar <- function(df) {
       dateRangeInput("date_range", label = "Filter by date egg hatched:",
                      start = min(df$date_egg), end = max(df$date_egg),
                      min = min(df$date_egg) - 5, max = max(df$date_egg) + 5),
-      HTML("<h5><b>Filter by penguin weight in grams:</b></h5>"),
+      strong("Filter by penguin weight in grams:"),
       # text input boxes
       splitLayout(
         textInput("g_min", label = HTML("Enter minimum <br/> weight:"), 
@@ -53,17 +54,18 @@ sidebar <- function(df) {
                   placeholder = "0g"),
       )
     ),
-    conditionalPanel(condition = "input.tabs == 'Bar chart' | 
-                                  input.tabs == 'Line chart'",
+    # tab_bar or tab_line ----
+    conditionalPanel(condition = "input.my_tabs == 'tab_bar' | 
+                                  input.my_tabs == 'tab_line'",
       selectInput("chart_label", label = HTML("Would you like to label values?"),
-                  choices = c("No", "Yes"), 
-                  selectize = FALSE, selected = "No"),
+                  choices = c("No", "Yes"), selectize = FALSE, selected = "No"),
       selectInput("chart_palette", label = HTML("Select desired color palette:"),
                   choices = c("Blues", "Greens", "Greys", "Oranges", "Purples",
                               "Reds", "Dark2"), 
                   selectize = FALSE, selected = "Blues")
     ),
-    conditionalPanel(condition = "input.tabs == 'Bar chart'",
+    # tab_bar ----
+    conditionalPanel(condition = "input.my_tabs == 'tab_bar'",
       selectInput("bar_fill", label = HTML("Select desired fill type:"),
                   choices = c("Plain", "Textured"), 
                   selectize = FALSE, selected = "Plain"), 
@@ -72,7 +74,8 @@ sidebar <- function(df) {
                               "blue", "purple", "white"), 
                   selectize = FALSE, selected = "white"), 
     ),
-    conditionalPanel(condition = "input.tabs == 'Line chart'",
+    # tab_line ----
+    conditionalPanel(condition = "input.my_tabs == 'tab_line'",
       selectInput("line_display", label = HTML("Select desired line display:"),
                   choices = c("Lines", "Lines + Markers", "Markers"), 
                   selectize = FALSE, selected = "Lines"),
@@ -80,9 +83,7 @@ sidebar <- function(df) {
                    choices = c("Yes", "No"), selected = "No"),
       radioButtons("marker_type", label = HTML("Should markers vary?"),
                    choices = c("Yes", "No"), selected = "No"),
-
     ),
-
     # Clear All Filters Button
     # actionButton("clear_all", "Clear All Filters", class = "btn-primary"),
   )
@@ -90,50 +91,46 @@ sidebar <- function(df) {
 
 main <- function(df) {
   mainPanel(
-    tabsetPanel(id = "tabs", 
-                tabPanel("About data", 
-                         h2("About the Palmer Penguins data"),
-                         p(HTML("These data are from a study in Antarctica. 
-                                Data on penguins are publicly available through 
-                                the <i>palmerpenguins</i> R package.
-                                Data for names, foods, and swim speeds were 
-                                made up for an
-                <a href='https://tidy-mn.github.io/R-camp-penguins/'>RCamp</a>
-                                exercise.")),
-                         br(), 
-                         htmlOutput("sources"),
-                         p(HTML("This dashboard was created by 
-                                <a href='https://github.com/ajstamm'>Abigail 
-                                Stamm</a>
-                                as an example dashboard for the presentations 
-                                <i>Making data visualizations accessible</i> 
-                                and <i>Creating accessible dashboards using 
-                                R Shiny</i> as part of
-                                <a href='https://mn.gov/dhs/equity-week/'>MN 
-                                DHS Equity Week 2024</a>."))),
-                tabPanel("Individual data", br(), br(),
-                         DT::dataTableOutput("all_penguins")),
-                tabPanel("Summary data", br(), br(),
-                         DT::dataTableOutput("sum_penguins")),
-                tabPanel("Line chart", br(), br(),
-                         plotly::plotlyOutput("line_chart"),
-                         br(), br(), br(),
-                         dataTableOutput("line_table"),
-                         br(), br(), br()),
-                tabPanel("Bar chart", br(), br(),
-                  conditionalPanel(condition = "input.bar_fill == 'Plain'",
-                                   plotly::plotlyOutput("bar_plain")),
-                  conditionalPanel(condition = "input.bar_fill == 'Textured'",
-                                   shiny::plotOutput("bar_texture")),
-                  br(), br(), br(),
-                  dataTableOutput("bar_table"),
-                  br(), br(), br()
-                ),
-                tabPanel("Text formatting",
-                         br(), br(), 
-                         htmlOutput("text_play"), 
-                         DT::dataTableOutput("font_matrix"),
-                         br(), br())
+    tabsetPanel(id = "my_tabs", 
+      # tab_about ----
+      tabPanel(title = "About data", value = "tab_about",
+        h2("About the Palmer Penguins data"),
+        p("These data are from a study in Antarctica. Data on penguins are 
+           publicly available through the", em("palmerpenguins"), 
+          "R package. Data for names, foods, and swim speeds were made up 
+           for an"), 
+        a(href = "https://tidy-mn.github.io/R-camp-penguins/", "RCamp"), 
+        p("exercise."), br(), 
+        htmlOutput("sources"),
+        p("This dashboard was created by"),
+        a(href = "https://github.com/ajstamm", "Abigail Stamm"),
+        p("as an example dashboard for the presentations", 
+          em("Making data visualizations accessible"), "and", 
+          em("Creating accessible dashboards using R Shiny"), "as part of"),
+        a(href = "https://mn.gov/dhs/equity-week/", "MN DHS Equity Week 2024")),
+      # tab_indiv ----
+      tabPanel(title = "Individual data", value = "tab_indiv", br(), br(),
+        DT::dataTableOutput("all_penguins")),
+      # tab_sum ----
+      tabPanel(title = "Summary data", value = "tab_sum", br(), br(),
+        DT::dataTableOutput("sum_penguins")),
+      # tab_line ----
+      tabPanel(title = "Line chart", value = "tab_line", br(), br(),
+        plotly::plotlyOutput("line_chart"), br(), br(), br(),
+        dataTableOutput("line_table"), br(), br(), br()),
+      # tab_bar ----
+      tabPanel(title = "Bar chart", value = "tab_bar", br(), br(),
+        conditionalPanel(condition = "input.bar_fill == 'Plain'",
+                         plotly::plotlyOutput("bar_plain")),
+        conditionalPanel(condition = "input.bar_fill == 'Textured'",
+                         shiny::plotOutput("bar_texture")),
+        br(), br(), br(),
+        dataTableOutput("bar_table"), br(), br(), br()
+      ),
+      # tab_text ----
+      tabPanel(title = "Text formatting", value = "tab_text", br(), br(), 
+        htmlOutput("text_play"), 
+        DT::dataTableOutput("font_matrix"), br(), br())
     )
   )
 }

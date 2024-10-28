@@ -24,11 +24,13 @@ penguins <- describe_penguins()
 ui <- fluidPage(
   # Set language attribute for accessibility
   tags$html(lang = "en"),
+  # tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+  #                     href = "my_style.css")),
   
   # Application title
-  titlePanel("Exploring palmer penguin data"),
-  h1("hiddenTitle", style = "color:white", height = "1px"), 
-  h2("Palmer Penguins", style = "color:green"),
+  title = "Exploring palmer penguin data",
+  # h1("hiddenTitle", style = "color:white", height = "1px"), 
+  h1("Palmer Penguins", style = "color:green"),
 
   sidebarLayout(
     sidebar(penguins),
