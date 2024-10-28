@@ -28,9 +28,9 @@ ui <- fluidPage(
   #                     href = "my_style.css")),
   
   # Application title
-  title = "Exploring palmer penguin data",
+  title = "Accessible Palmer Penguins",
   # h1("hiddenTitle", style = "color:white", height = "1px"), 
-  h1("Palmer Penguins", style = "color:green"),
+  h1("Exploring palmer penguins data", style = "color:green"),
 
   sidebarLayout(
     sidebar(penguins),
@@ -75,7 +75,7 @@ server <- function(input, output) {
     return(about)
   })
   
-  output$sources <- renderText({ 
+  output$sources_list <- renderUI({ 
     src <- content_sources()
     return(src)
   })

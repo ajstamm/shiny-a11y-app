@@ -83,17 +83,15 @@ font_size_color_matrix <- function() {
                     color = 'white')
 }
 
-
 content_sources <- function() {
-    sources <- paste(               
-      '<img src="https://allisonhorst.github.io/palmerpenguins/logo.png"',
-      'alt="palmer penguins R package logo">', "</br></br>", 
-      "For more information, see: </br>", "<ul><li>",
-      '<a href="https://allisonhorst.github.io/palmerpenguins/">',
-      "palmerpenguins on GitHub</a>", "<li>", 
-      '<a href="https://colorbrewer2.org/">', "ColorBrewer</a>", "<li>", 
-      '<a href="https://www.w3.org/WAI/WCAG22/quickref/">',
-      "WCAG guidelines at W3.org</a>", "</ul>")
-    return(HTML(sources))
+    sources <- 
+      tags$ul(
+        tags$li(a(href="https://allisonhorst.github.io/palmerpenguins/",
+             "palmerpenguins on GitHub")),
+        tags$li(a(href="https://www.w3.org/WAI/WCAG22/quickref/",
+             "WCAG guidelines at W3.org")),
+        tags$li(a(href="https://colorbrewer2.org/", "ColorBrewer")),
+      )
+    return(sources)
 }
 
