@@ -119,10 +119,6 @@ main <- function(df) {
       # tab_sum ----
       tabPanel(title = "Summary data", value = "tab_sum", br(), br(),
         DT::dataTableOutput("sum_penguins")),
-      # tab_line ----
-      tabPanel(title = "Line chart", value = "tab_line", br(), br(),
-        plotly::plotlyOutput("line_chart"), br(), br(), br(),
-        dataTableOutput("line_table"), br(), br(), br()),
       # tab_bar ----
       tabPanel(title = "Bar chart", value = "tab_bar", br(), br(),
         conditionalPanel(condition = "input.bar_fill == 'Plain'",
@@ -132,6 +128,10 @@ main <- function(df) {
         br(), br(), br(),
         dataTableOutput("bar_table"), br(), br(), br()
       ),
+      # tab_line ----
+      tabPanel(title = "Line chart", value = "tab_line", br(), br(),
+        plotly::plotlyOutput("line_chart"), br(), br(), br(),
+        dataTableOutput("line_table"), br(), br(), br()),
       # tab_text ----
       tabPanel(title = "Text formatting", value = "tab_text", br(), br(), 
         htmlOutput("text_play"), 

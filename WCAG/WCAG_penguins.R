@@ -5,11 +5,10 @@
 #          text customization and keyboard and screen reader navigation  #
 # goal:    1. side menu with drop-down and text input                    #
 #          2. chart(s) with varied colors, symbols, patterns             #
-#          3. responsive table(s)                                        #
+#          3. responsive table                                           #
 #          4. text that can change color, size, spacing                  #
 #          5. dynamic table and download file for each chart             #
-#          6. aria text for everything                                   # 
-#          7. download buttons #todo                                     #
+#          6. aria text for everything                                   #
 # ----------<>----------<>----------<>----------<>----------<>---------- #
 
 # load shiny ----
@@ -25,13 +24,15 @@ penguins <- describe_penguins()
 ui <- fluidPage(
   # Set language attribute for accessibility
   tags$html(lang = "en"),
-  # tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-  #                     href = "my_style.css")),
+  # titlePanel(), or explicit with
+  tags$title("WCAG with penguins"),
+  
+  # shinya11y::use_tota11y(),
   
   # Application title
-  title = "Accessible Palmer Penguins",
-  # h1("hiddenTitle", style = "color:white", height = "1px"), 
-  h1("Exploring palmer penguins data", style = "color:green"),
+  h1("Exploring Web Content Accessibility Guidelines (WCAG)"), 
+     # style = "color: white; height: 0px;"
+  h2("with palmer penguins", style = "color: green"),
 
   sidebarLayout(
     sidebar(penguins),
@@ -48,7 +49,7 @@ server <- function(input, output) {
   })
 
   # data tables
-  output$all_penguins <- DT::renderDataTable({
+  output$all_penguins <- DT::renderDT({
     df <- filtered_data() 
     if (ncol(df) > 1) {
       df <- df |> 
@@ -60,7 +61,7 @@ server <- function(input, output) {
     return(dt)
   }, server = FALSE)
   
-  output$sum_penguins <- DT::renderDataTable({
+  output$sum_penguins <- DT::renderDT({
     df <- filtered_data() 
     df <- summarize_penguins(df)
     dt <- table_penguins(df)
@@ -76,12 +77,12 @@ server <- function(input, output) {
     return(about)
   })
   
-  output$sources_list <- renderUI({ 
+  output$sources <- renderText({ 
     src <- content_sources()
     return(src)
   })
   
-  output$font_matrix <- renderDataTable({ 
+  output$font_matrix <- DT::renderDT({ 
     fnt <- font_size_color_matrix()
     return(fnt)
   })
@@ -106,7 +107,7 @@ server <- function(input, output) {
     return(py)
   })
   
-  output$bar_table <- renderDataTable({
+  output$bar_table <- DT::renderDT({
     df <- filtered_data() 
     df <- bar_table(df)
     DT::datatable(df, extensions = c('Responsive'), selection = "single",
@@ -127,7 +128,7 @@ server <- function(input, output) {
     return(p)
   })
   
-  output$line_table <- renderDataTable({
+  output$line_table <- DT::renderDT({
     df <- filtered_data() 
     df <- line_table(df)
     DT::datatable(df, extensions = c('Responsive'), selection = "single",

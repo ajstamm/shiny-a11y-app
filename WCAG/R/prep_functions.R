@@ -67,126 +67,128 @@ feed_penguins <- function(d) {
 }
 
 name_penguins <- function(d, var = "Sex") {
-  # Females ----
+  ## Females ----
   female <- { c(
-    # A-C ----
+    ### A-C ----
     "Amy", "Ali", "Ann", "Abi", "Agy", "Ada", "Ari", "Aya", "Adi",
     "Bri", "Bes", "Bea", "Bee", "Bae", 
     "Cat", "Chi", "Cho", "Cas", "Cay", 
-    # D-F ----
+    ### D-F ----
     "Del", "Dot", "Dia", "Di", "Dea", 
     "Eta", "Eva", "Era", "Eve", "Ewe", "Em", "El", "Es",
     "Fae", "Fey", "Fly", "Flo", "Fia", "Fan", "Fam", "Fa",
-    # G-I ----
+    ### G-I ----
     "Gin", "Gam", "Gem", "Glo", "Gia", "Gal", 
     "Hen", "Hel", "Hey", "Hae", "Haj", "Hi", "Hon", "Her", 
-    "Ing", "Ida", "Ivy", "Icy", "Io", 
-    # J-L ----
+    "Ing", "Ida", "Ivy", "Icy", "Io", "Isk", 
+    ### J-L ----
     "Jen", "Jan", "Joy", "Jun", "Jaz", "Jam", "Jin", 
     "Kim", "Kay", "Kat", "Kel", "Kes", "Kit", 
     "Lam", "Lin", "Liz", "Liv", "Lou", "Lia", "Lei", "La", "Lu",
-    # M-O ----
+    ### M-O ----
     "May", "Meg", "Mol", "Mum", "Mae", "Mia", "Ma",
     "Nix", "Nan", "Nel", "Nia", "Nag", 
     "Ola", "Opa", "Ogg", "Oba", 
-    # P-R ----
+    ### P-R ----
     "Pay", "Pri", "Pel", "Pia", "Pru", "Phi", "Pi", 
     "Qua", 
     "Rin", "Rae", "Rue", "Rho", "Roe", "Ran", "Ren", "Rhi", "Re", 
-    # S-V ----
+    ### S-V ----
     "Sis", "Sue", "Spa", "Sea", "See", 
     "Tes", "Tie", "Tat", "Tru", "Tia", 
     "Una", "Uni", 
     "Ven", "Vi", "Via", 
-    # W-Z ----
+    ### W-Z ----
     "Wan", "Wen", "Wea", 
     "Xi", "Xis", 
     "Yas", "Yin", 
     "Zoe", "Zee") }
+  ## Males ----
   male <- { c(
-    # A-C ----
+    ### A-C ----
     "Abe", "Axe", "Asa", "Ace", "Art", "Alf", "Ask", "Ark", "Aba", "Add", 
     "Ben", "Bob", "Bai", "Bo", 
     "Cob", "Cub", "Cox", "Cad", "Cab", "Cap", "Cy", 
-    # D-F ----
+    ### D-F ----
     "Den", "Don", "Dex", "Dag", "Dap", "Doc", "Dom", 
     "Eli", "Elm", "Emu", "Edy", "Eco", "Elk", "Eb", "Ed",
     "Fin", "Fox", "Fez", "Fab", "Fad", "Far", "Fix", 
-    # G-I ----
+    ### G-I ----
     "Gay", "Guy", "Gad", "Gus", "Go", 
     "Har", "Hoy", "Hob", "Hap", "Hal", "Ho", "Ham", "Hao", "Has", "Hog", "Him",
     "Ian", "Inu", "Ira", "Ivo", "Ick", 
-    # J-L ----
+    ### J-L ----
     "Jay", "Jet", "Jos", "Jeb", "Jim", "Jut", "Jag", "Jot", "Jud", 
     "Ken", "Kai", "Kin", "Kid", 
     "Lee", "Len", "Lot", "Leo", "Lux", "Lex", "Lad", "Li", 
-    # M-O ----
+    ### M-O ----
     "Moe", "Mug", "Mat", "Mic", "Mec", "Mu", "Mo", 
     "Nod", "Nat", "Ned", "Neo", "Nay", "Nap", "Nab", "No",
     "Ori", "Oni", "Orc", "Oaf", "Obi", "Oz", 
-    # P-R ----
+    ### P-R ----
     "Pop", "Pin", "Psy", "Pig", "Pal", "Pad", "Pa", "Pod", 
     "Quo", 
     "Reb", "Rex", "Raj", "Roc", "Rad", "Rah", "Rai", "Roy", "Rep", "Rob", "Rum", 
-    # S-V ----
+    ### S-V ----
     "Spy", "Sun", "Sap", "Stu", "Sty", "Soy", "Sin", "Sy", "Six", "Sep", "Sev", 
     "Tom", "Tod", "Ted", "Tim", "Teo", "Tex", "Tar", "Ty", "Top", 
     "Ulg", "Uri", "Ugh", "Udo", "Ulu", 
     "Vic", "Vim", "Van", "Vet", "Von", "Vat", 
-    # W-Z ----
+    ### W-Z ----
     "Wil", "Wes", "Wex", "Wag", "Wad", "Was", 
     "Xo", "Xav", 
     "Yes", "Yah", "Yak", "Yar", "Yo", 
     "Zil", "Zev", "Zap", "Zed") }
+  ## Unisex ----
   unisex <- { c(
-    # A-C ----
+    ### A-C ----
     "Arc", "An", "And", "Ash", "Al", "Ave",
     "Bar", "Ban", "Bex", "Bet", "Bay", "Ba", "Bel", 
     "Cam", "Car", "Cal", "Coy", 
-    # D-F ----
+    ### D-F ----
     "Day", "Dor", "Dax", "Daz", "Dal", "Din", "Da", "Dev", "Dip", 
     "Eon", "Egg",
     "Fry", "Fen", "Fel", "Fam", "Fit", "Fir", "Fip",  
-    # G-I ----
+    ### G-I ----
     "Gru", "Gen", "Gab", "Gap", "Get", "Gnu", "Gel", 
     "Hay", "Hex", "Hem", "Hid", "Hue", "Hai", "Hej", "Hop", "Hic", "Hep", "Hat",
-    "Ink", "Ixi", "Ire", "Iri", "Ilk", 
-    # J-L ----
+    "Ink", "Ixi", "Ire", "Iri", "Ilk", "Ix",
+    ### J-L ----
     "Jas", "Jax", 
     "Koi", "Koa", "Kip", "Key", 
     "Les", "Lev", "Let", "Lan", "Let", "Lop", 
-    # M-N ----
+    ### M-N ----
     "Max", "Mad", "Mag", "Mel", "Mix", "Mac", "Mop", "Met", "My", 
     "Nol", "Nip", "Nox", "Nor", "Nye", "Noa", "Nil", "Nog", 
     "Oak", "Orb", 
-    # P-R ----
+    ### P-R ----
     "Pen", "Pip", "Pah", "Pet", "Pat", "Pic", 
-    "Qui", 
+    "Qui", "Que",
     "Rap", "Red", "Rat", "Ray", "Riz", "Rag", 
-    # S-V ----
+    ### S-V ----
     "Sam", "Sar", "Sal", "Sen", "Sad", "Sag", "Sup", "Set", "Sel", 
     "Tog", "Tip", "Try", "Tye", "The", "Thy", 
     "Uli", "Urn", "Uke", 
     "Vin", "Vas", "Vie", "Vip", 
-    # W-Z ----
+    ### W-Z ----
     "Who", "Way", "Wat", "Wig", "Win", "Woo", "Wee", "Why", 
     "Xan", 
     "Yep", "Yip", "Yap", "Yam", "Yen", 
     "Zig", "Zag", "Zip", "Zoo", "Zen") }
 
-  # add names ----
+  ## add names ----
   p <- d |> dplyr::mutate(sex = substr(tolower(!!dplyr::sym(var)), 1, 1))
   
-  u <- p |> dplyr::filter(is.na(sex)) |>
-    dplyr::mutate(name = sample(unisex, size = 11))
-  f <- p |> dplyr::filter(sex == "f") |>
-    dplyr::mutate(name = sample(c(female, unisex[!unisex %in% u$name]), 
-                                size = 165))
-  m <- p |> dplyr::filter(sex == "m") |>
-    dplyr::mutate(name = sample(c(male, unisex[!unisex %in% c(u$name, f$name)]), 
-                                size = 168))
+  u <- dplyr::filter(p, is.na(sex))
+  u <- dplyr::mutate(u, name = sample(unisex, size = nrow(u)))
+  unisex <- unisex[!unisex %in% u$name]
+  f <- dplyr::filter(p, sex == "f") 
+  f <- dplyr::mutate(f, name = sample(c(female, unisex), size = nrow(f)))
+  unisex <- unisex[!unisex %in% f$name]
+  m <- dplyr::filter(p, sex == "m") 
+  m <- dplyr::mutate(m, name = sample(c(male, unisex), size = nrow(m)))
   
-  # combine and return ----
+  ## combine and return ----
   d <- dplyr::bind_rows(list(f, m, u)) 
   return(d)
 }
