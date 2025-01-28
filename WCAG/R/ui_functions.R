@@ -10,14 +10,21 @@ sidebar <- function(df) {
     br(), br(),
     # tab_text ----
     conditionalPanel(condition = "input.my_tabs == 'tab_text'",
-      textInput("font_size", placeholder = "12px", value = "12px", 
-                label = p("Enter desired font size in pixels:")),
-      textInput("letter_spacing", placeholder = "1px", value = "1px", 
-                label = p("Enter desired letter spacing in pixels:")),
       selectInput("text_color", label = p("Select desired font color:"),
                   choices = c("black", "red", "orange", "yellow", "green", 
                               "blue", "purple", "white"), 
-                  selectize = FALSE, selected = "black")
+                  selectize = FALSE, selected = "purple"),
+      selectInput("font_size", 
+                  label = p("Select desired font size in pixels:"),
+                  choices = c(10, 12, 14, 16, 18, 20, 24, 28, 32, 40, 48), 
+                  selectize = FALSE, selected = 18),
+      # textInput("font_size", placeholder = "12px", value = "12px", 
+      #           label = p("Enter desired font size in pixels:")),
+      selectInput("letter_spacing", 
+                  label = p("Select desired letter spacing in pixels:"),
+                  choices = 0:10, selectize = FALSE, selected = 1),
+      # textInput("letter_spacing", placeholder = "1px", value = "1px", 
+      #           label = p("Enter desired letter spacing in pixels:"))
     ),
     # tab_indiv, tab_sum, tab_line, or tab_bar ----
     conditionalPanel(condition = "input.my_tabs == 'tab_indiv' |
@@ -101,17 +108,7 @@ main <- function(df) {
            for an", 
           a(href = "https://tidy-mn.github.io/R-camp-penguins/", "RCamp"), 
           "exercise."), br(), 
-        img(src="https://allisonhorst.github.io/palmerpenguins/logo.png",
-            alt="palmer penguins R package logo"), br(), br(),
-        p("For more information, see:"),
         uiOutput("sources_list"),
-        p("This dashboard was created by", 
-          a(href = "https://github.com/ajstamm", "Abigail Stamm"),
-          "as an example dashboard for", 
-          a(href = "https://mn.gov/dhs/equity-week/", "MN DHS Equity Week 2024"), 
-          "and was used in the presentations", 
-          em("Making data visualizations accessible"), "and", 
-          em("Creating accessible dashboards using R Shiny.")),
       ),
       # tab_indiv ----
       tabPanel(title = "Individual data", value = "tab_indiv", br(), br(),
@@ -135,7 +132,17 @@ main <- function(df) {
       # tab_text ----
       tabPanel(title = "Text formatting", value = "tab_text", br(), br(), 
         htmlOutput("text_play"), 
-        DT::dataTableOutput("font_matrix"), br(), br())
+        DT::dataTableOutput("font_matrix"), br(), br(),
+        p("When is each text-to-background color ratio in the table above 
+           acceptable?"),
+        tags$ul(
+          tags$li(tags$b("Color Ratio 2:1"), "and below are never acceptable."),
+          tags$li(tags$b("Color Ratio 3:1"), "is only acceptable for text size 
+                  above 18pt. Ratios below 3:1 are never acceptable."),
+          tags$li(tags$b("Color Ratio 4.5:1"), "and above are necessary for all 
+                  text size 18pt or smaller and acceptable for any size text."),
+        )
+      ),
     )
   )
 }

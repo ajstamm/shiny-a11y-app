@@ -70,14 +70,14 @@ server <- function(input, output) {
   
   # about data
   output$text_play <- renderText({ 
-    msg <- paste("To modify the formatting of this text,",
-                 "select alternate colors and values in the menu.",
+    msg <- paste("To modify the formatting of this paragraph,",
+                 "select alternate colors and values in the sidebar to the left.",
                  "Text will change in real time.")
     about <- format_text(input, message = msg)
     return(about)
   })
   
-  output$sources <- renderText({ 
+  output$sources_list <- renderText({ 
     src <- content_sources()
     return(src)
   })

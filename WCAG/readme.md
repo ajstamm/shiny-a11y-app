@@ -97,6 +97,13 @@ For specific details on each item, see the
     - Failure: no non-hover text equivalent and uninformative ARIA text
     - Possible (not ideal) solution: deactivate icons
 
+## App history
+
+This is an example dashboard created for MN DHS Equity Week 2024. It has been used in the following presentations:
+
+- *Making data visualizations accessible*, MN DHS Equity Week 2024
+- *Creating accessible dashboards using R Shiny*, MN DHS Equity Week 2024
+- *Web Accessibility in Online Dashboard Design*, LHD AoS Conference 2025
 
 
 
