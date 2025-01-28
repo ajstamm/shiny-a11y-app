@@ -5,10 +5,11 @@
 #          text customization and keyboard and screen reader navigation  #
 # goal:    1. side menu with drop-down and text input                    #
 #          2. chart(s) with varied colors, symbols, patterns             #
-#          3. responsive table                                           #
+#          3. responsive table(s)                                        #
 #          4. text that can change color, size, spacing                  #
 #          5. dynamic table and download file for each chart             #
-#          6. aria text for everything                                   #
+#          6. aria text for everything                                   # 
+#          7. download buttons #todo                                     #
 # ----------<>----------<>----------<>----------<>----------<>---------- #
 
 # load shiny ----
@@ -53,7 +54,7 @@ server <- function(input, output) {
       df <- df |> 
         dplyr::mutate(individual_id = paste('<details><summary aria-label="', 
                                    study_name, individual_id, sample_number, 
-                                   '">', study_name, '</summary></details>'))
+                                   '">', individual_id, '</summary></details>'))
     }
     dt <- table_penguins(df)
     return(dt)

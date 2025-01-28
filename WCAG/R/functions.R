@@ -15,6 +15,11 @@ filter_penguins <- function(input, df) {
   if (!input$study_name == "All") {
     df <- df[df$study_name == input$study_name, ]
   }
+  df <- df |> dplyr::filter(
+    df$date_egg >= input$date_range[1], df$date_egg <= input$date_range[2],
+    df$body_mass_g >= as.numeric(gsub("[a-zA-Z ,]", "", input$g_min)),
+    df$body_mass_g <= as.numeric(gsub("[a-zA-Z ,]", "", input$g_max))
+  )
 
   if (nrow(df) == 0) {
     df <- data.frame(Message = paste("There are no valid penguins for these", 
@@ -60,26 +65,28 @@ format_text <- function(input, message) {
 font_size_color_matrix <- function() {
   # color contrast checker
   # https://webaim.org/resources/contrastchecker/
+  font_sizes <- c("12 pt", "18 pt", "24 pt")
   d <- tibble::tibble(
-    "Color Ratio 2:1" = c("12 pt", "18 pt", "24 pt"),
-    "Color Ratio 3:1" = c("12 pt", "18 pt", "24 pt"),
-    "Color Ratio 4.5:1" = c("12 pt", "18 pt", "24 pt")
+    "Ratio 2:1" = font_sizes,
+    "Ratio 3:1" = font_sizes,
+    "Ratio 4.5:1" = font_sizes
   )
   
   DT::datatable(d, extensions = c('Responsive'), selection = "single",
-                escape = FALSE, options = list(dom = 't', ordering = FALSE),
-                class = 'cell-border stripe', rownames = FALSE) |>
-    DT::formatStyle("Color Ratio 2:1", target = 'row', 
+                escape = TRUE, options = list(dom = 't', ordering = FALSE),
+                class = 'cell-border stripe', rownames = FALSE,
+                caption = "Color ratio examples") |>
+    DT::formatStyle("Ratio 2:1", target = 'row', 
                     fontSize = DT::styleEqual("12 pt", '12px')) |>
-    DT::formatStyle("Color Ratio 2:1", target = 'row',
+    DT::formatStyle("Ratio 2:1", target = 'row',
                     fontSize = DT::styleEqual("18 pt", '18px')) |>
-    DT::formatStyle("Color Ratio 2:1", target = 'row',
+    DT::formatStyle("Ratio 2:1", target = 'row',
                     fontSize = DT::styleEqual("24 pt", '24px')) |>
-    DT::formatStyle("Color Ratio 2:1", backgroundColor = "#FFA052", 
+    DT::formatStyle("Ratio 2:1", backgroundColor = "#FFA052", 
                     color = 'white') |>
-    DT::formatStyle("Color Ratio 3:1", backgroundColor = "#F06C00", 
+    DT::formatStyle("Ratio 3:1", backgroundColor = "#F06C00", 
                     color = 'white') |>
-    DT::formatStyle("Color Ratio 4.5:1", backgroundColor = "#C25700", 
+    DT::formatStyle("Ratio 4.5:1", backgroundColor = "#C25700", 
                     color = 'white')
 }
 

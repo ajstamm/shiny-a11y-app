@@ -97,7 +97,7 @@ main <- function(df) {
         h2("About the Palmer Penguins data"),
         p("These data are from a study in Antarctica. Data on penguins are 
            publicly available through the", em("palmerpenguins"), 
-          "R package. Data for names, foods, and swim speeds were made up 
+          "R package. Data for names, foods, and swim speeds were fabricated 
            for an", 
           a(href = "https://tidy-mn.github.io/R-camp-penguins/", "RCamp"), 
           "exercise."), br(), 
