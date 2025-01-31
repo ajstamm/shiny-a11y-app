@@ -164,9 +164,12 @@ generate_filename <- function(input, type = "data", package = "brailler") {
   f <- paste(f, collapse = "-")
   if (type == "data") {
     f <- paste0(f, ".csv")
+  } else if (type == "sound") {
+    f <- paste0(f, ".wav")
   } else {
     f <- paste0(f, ".pdf")
   }
+  f <- paste("www", f, sep = "/")
   return(f)
 }
 

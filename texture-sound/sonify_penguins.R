@@ -2,6 +2,7 @@
 library(shiny)
 library(ggplot2)
 library(sonify)
+# sonify file can directly play in Chrome, not Firefox
 library(BrailleR)
 library(dplyr)
 library(plotly)
@@ -10,6 +11,7 @@ library(shinythemes)  # For themes
 
 source("R/functions.R")
 source("R/ui_functions.R")
+addResourcePath("www", "www")
 
 
 ## Generate dnorm() dataset ----
@@ -32,7 +34,8 @@ ui <- fluidPage(
 server <- function(input, output, session) {
   
   ## Sonification Tab ----
-  # Normal distribution plot
+    ### Normal distribution ----
+  # plot
   output$normal_dist_plot <- plotly::renderPlotly({
     p <- ggplot(normal_data, aes(x = index, y = normal_data)) +
       geom_point(size = 2, alpha = 0.7) +
@@ -44,14 +47,22 @@ server <- function(input, output, session) {
     plotly::ggplotly(p)
   })
   
-  # Button to play sonification of normal distribution
-  observeEvent(input$play_sonify_normal, {
-    sonify(normal_data$normal_data, 
-           flim = c(450, as.numeric(input$freq_high_sonify)), 
-           duration = as.numeric(input$duration_sonify))
+  sonify_dnorm <- reactive({
+    s <- sonify::sonify(normal_data$normal_data, 
+                        flim = c(450, as.numeric(input$freq_high_sonify)), 
+                        duration = as.numeric(input$duration_sonify),
+                        player = NULL, smp_rate = 48000, play = FALSE)
+    tuneR::writeWave(s, filename = filename)
   })
   
-  # Penguin data filtering
+  # Button to play sonification of normal distribution
+  observeEvent(input$play_sonify_normal, {
+    s <- sonify_dnorm()
+    howler::playSound("www/sonify_dnorm.wav")
+  })
+  
+    ### Penguin data ----
+  # filter
   filtered_data_sonify <- reactive({
     t <- dplyr::filter(penguins, !is.na(bill_length_mm))
     if (!grepl("All", input$species_sonify)) {
@@ -62,6 +73,7 @@ server <- function(input, output, session) {
     return(t)
   })
   
+  # plot
   output$sonify_penguin_plot <- plotly::renderPlotly({
     df <- filtered_data_sonify()
     p <- bills_plot(df, species = input$species_sonify,
@@ -71,6 +83,59 @@ server <- function(input, output, session) {
     return(q)
   })
   
+  # sonify
+  sonify_penguin <- reactive({
+  #   refer to 
+  #   https://forum.posit.co/t/playing-audio-files-made-in-the-app-with-the-audio-package-in-shinydashboard/27401/7
+  #   https://stackoverflow.com/questions/36205419/r-shiny-audio-playback
+  #   https://support.mozilla.org/en-US/questions/1228379
+    df <- filtered_data_sonify()
+    d <- bills_df(df, species = input$species_sonify,
+                  x = input$x_sonify, y = input$y_sonify,
+                  degrees = input$degrees_sonify)
+    if (nrow(d) > 0) {
+      # set player to browser?
+      # wav settings: two channels and 48k sampling rate?
+      s <- sonify::sonify(x = d$x, y = d$y, 
+                          flim = c(450, as.numeric(input$freq_high_sonify)), 
+                          duration = as.numeric(input$duration_sonify),
+                          player = NULL, smp_rate = 48000, play = FALSE)
+      filename <- generate_filename(input = input, type = "sound", 
+                                    package = "sonify")
+      # this is supposed to overwrite, but it is not ...
+      # seewave::savewav(s, filename = filename, channel = 2,
+      #                  rescale = c(450, as.numeric(input$freq_high_sonify)))
+      # try this instead ...
+      tuneR::writeWave(s, filename = filename)
+      s <- filename
+    } else {
+      s <- NULL
+    }
+    return(s)
+  })
+  
+  observeEvent(input$play_sonify_penguin, {
+    s <- sonify_penguin()
+    if (!is.null(s)) {
+      # tags$audio(src = "www/sonify_temp.wav", type = "audio/wav",
+      #            autoplay = TRUE, controls = TRUE)
+      howler::playSound(s)
+    }
+  })
+  
+  # control to play sound
+  # eventReactive(input$play_sonify_penguin, {
+  #   s <- sonify_penguin()
+  #   if (!is.null(s)) {
+  #     tags$audio(src = "www/sonify_temp.wav", type = "audio/wav",
+  #                autoplay = TRUE, controls = TRUE)
+  #   }
+  # })
+  
+
+  
+  
+  ## Download buttons ----
   output$download_model <- downloadHandler(
     filename = function() {
       filename = generate_filename(input = input, type = "model", 
@@ -139,21 +204,6 @@ server <- function(input, output, session) {
   )
 
   
-  # Button to play sonification of penguin data
-  observeEvent(input$play_sonify_penguin, {
-    df <- filtered_data_sonify()
-    d <- bills_df(df, species = input$species_sonify,
-                  x = input$x_sonify, y = input$y_sonify,
-                  degrees = input$degrees_sonify)
-    if (nrow(d) > 0) {
-      sonify(x = d$x, y = d$y, 
-             flim = c(450, as.numeric(input$freq_high_sonify)), 
-             duration = as.numeric(input$duration_sonify))
-    } else {
-      showNotification("No data available to sonify for this species.", 
-                       type = "warning")
-    }
-  })
   
   ## Data Textualization (BrailleR) Tab ----
   filtered_data_brailler <- reactive({

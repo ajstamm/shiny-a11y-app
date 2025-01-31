@@ -134,8 +134,7 @@ main_ui <- function() {
                          "Select degrees for the fitted model:", 
                          choices = 2:5, selected = 3),
              actionButton("play_sonify_penguin", 
-                          "Play Sonification of Penguin Data", 
-                          class = "btn btn-primary"),
+                          "Play Sonification of Penguin Data"),
              
              # Plot output for penguin data sonification
              plotly::plotlyOutput("sonify_penguin_plot", 
