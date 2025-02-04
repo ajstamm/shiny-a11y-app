@@ -17,16 +17,17 @@ draw_bar <- function(df, input) {
   mypal <- input$chart_palette
   df <- bar_table(df) |>
     dplyr::mutate(species = gsub("\\(", "\n(", species), 
-                  tip = paste("Species:", species, "\n", 
-                              "Island:", island, "\n", 
-                              "Count:", count))
+                  tip = paste("<b>Species:</b>", as.character(species), 
+                            "<br><b>Island:</b>", as.character(island), 
+                            "<br><b>Count</b>:", count))
   
   p <- ggplot2::ggplot(df, ggplot2::aes(x = factor(island), y = count,
                                         text = tip, fill = species,
                                         image = species)) +
-    ggplot2::geom_bar(stat = "identity", color = input$bar_border,
-                      position = ggplot2::position_dodge(
-                                 preserve = "single")) +
+    ggiraph::geom_bar_interactive(ggplot2::aes(tooltip = tip),
+                                  stat = "identity", color = input$bar_border,
+                                  position = ggplot2::position_dodge(
+                                             preserve = "single")) +
     ggplot2::scale_fill_brewer(palette = mypal) +
     ggplot2::labs(x = "Island by species", y = "Count") +
     ggplot2::theme_minimal() + 
@@ -48,17 +49,15 @@ draw_bar <- function(df, input) {
 
 draw_textured_bar <- function(df, input) {
   # read images
-  images <- c(Biscoe = "diaginal_forward_large_white", 
-              Dream = "crosshatch_large_white",
-              Torgersen = "diaginal_backward_large_white")
-  ipath <- "textures/"
-  # ipath <- "a11y/penguins/textures/"
-  images <- paste0(ipath, images, ".png")
+  images <- paste0("textures/", c("x", "diamond", "ringoffset"), "_white.png")
   mypal <- input$chart_palette
   
   # prep data
   df <- bar_table(df) |>
-    dplyr::mutate(species = gsub("\\(", "\n(", species))
+    dplyr::mutate(species = gsub("\\(", "\n(", species),
+                  tip = paste("<b>Species:</b>", as.character(species), 
+                            "<br><b>Island:</b>", as.character(island), 
+                            "<br><b>Count</b>:", count))
 
   # draw plot (plotly can't read textures)
   p <- ggplot2::ggplot(df, ggplot2::aes(x = factor(island), y = count,
@@ -69,13 +68,17 @@ draw_textured_bar <- function(df, input) {
     ggtextures::scale_image_manual(values = images) +
     ggplot2::scale_fill_brewer(palette = mypal) +
     ggplot2::labs(x = "Species by island", y = "Count") +
+    ggiraph::geom_bar_interactive(ggplot2::aes(tooltip = tip), fill = NA,
+                                  stat = "identity", color = input$bar_border, 
+                                  position = ggplot2::position_dodge(
+                                             preserve = "single")) +
     ggplot2::theme_minimal() + 
-    ggplot2::theme(text = ggplot2::element_text(size=14), # all text
-                   axis.text = ggplot2::element_text(size=14), # axis text
-                   axis.title = ggplot2::element_text(size=18), # axis titles
-                   plot.title = ggplot2::element_text(size=20), # plot title
-                   legend.text = ggplot2::element_text(size=14), # legend text
-                   legend.title = ggplot2::element_text(size=18)) # legend title 
+    ggplot2::theme(text = ggplot2::element_text(size=10), # all text
+                   axis.text = ggplot2::element_text(size=10), # axis text
+                   axis.title = ggplot2::element_text(size=12), # axis titles
+                   plot.title = ggplot2::element_text(size=14), # plot title
+                   legend.text = ggplot2::element_text(size=10), # legend text
+                   legend.title = ggplot2::element_text(size=12)) # legend title 
   
   if (input$chart_label == "Yes") {
     p <- p + ggplot2::geom_text(ggplot2::aes(label = count, y = count + 2, 

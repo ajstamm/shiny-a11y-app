@@ -118,10 +118,11 @@ main <- function(df) {
         DT::dataTableOutput("sum_penguins")),
       # tab_bar ----
       tabPanel(title = "Bar chart", value = "tab_bar", br(), br(),
-        conditionalPanel(condition = "input.bar_fill == 'Plain'",
-                         plotly::plotlyOutput("bar_plain")),
-        conditionalPanel(condition = "input.bar_fill == 'Textured'",
-                         shiny::plotOutput("bar_texture")),
+               ggiraph::girafeOutput("bar_chart"),
+        # conditionalPanel(condition = "input.bar_fill == 'Plain'",
+        #                  plotly::plotlyOutput("bar_plain")),
+        # conditionalPanel(condition = "input.bar_fill == 'Textured'",
+        #                  shiny::plotOutput("bar_texture")),
         br(), br(), br(),
         dataTableOutput("bar_table"), br(), br(), br()
       ),

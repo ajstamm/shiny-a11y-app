@@ -89,22 +89,26 @@ server <- function(input, output) {
   
   
   # bar charts
-  output$bar_texture <- shiny::renderPlot({
-    df <- filtered_data() 
-    p <- draw_textured_bar(df, input)
-    return(p)
-  })
+  # output$bar_texture <- shiny::renderPlot({
+  #   df <- filtered_data() 
+  #   
+  #   return(p)
+  # })
   
-  output$bar_plain <- plotly::renderPlotly({
+  output$bar_chart <- ggiraph::renderGirafe({
     df <- filtered_data() 
     if (ncol(df) > 1) {
-      p <- draw_bar(df, input)
-      py <- plotly::ggplotly(p, tooltip = "text") 
+      if (input$bar_fill == 'Plain') {
+        p <- draw_bar(df, input)
+      } else {
+        p <- draw_textured_bar(df, input)
+      }
+      g <- ggiraph::girafe(ggobj = p) 
     } else {
-      py <- plotly_empty_plot(paste("No data are available for these filters.",
-                                    "Please select different filters."))
+      g <- plotly_empty_plot(paste("No data are available for these filters.",
+                                   "Please select different filters."))
     }
-    return(py)
+    return(g)
   })
   
   output$bar_table <- DT::renderDT({
