@@ -25,6 +25,12 @@ filter_penguins <- function(input, df) {
 }
 
 table_penguins <- function(df) {
+  names(df) <- tools::toTitleCase(gsub("_", " ", names(df)))
+  names(df) <- gsub("Mm", "(mm)", names(df))
+  names(df) <- gsub("Id$", "ID", names(df))
+  names(df) <- gsub(" g$", "(g)", names(df))
+  df <- dplyr::select(df, -dplyr::starts_with("Delta"))
+  
   if (ncol(df) == 1) { # no valid penguins
     dt <- DT::datatable(df, rownames = FALSE,
                         class = 'cell-border stripe',
@@ -49,13 +55,27 @@ summarize_penguins <- function(df) {
 }
 
 format_text <- function(input, message) {
-    font_size <- gsub("[^0-9.]", "", input$font_size)
-    letter_space <- gsub("[^0-9.]", "", input$letter_spacing)
-    p_setting <- paste('<p style="font-size:', paste0(font_size, "px"), 
-                       '; color:', input$text_color, 
-                       '; letter-spacing:', paste0(letter_space, "px"), ';">')
-    txt <- paste(p_setting, message, "</p>")
-    return(HTML(txt))
+  font_size <- gsub("[^0-9.]", "", input$font_size)
+  letter_space <- gsub("[^0-9.]", "", input$letter_spacing)
+  p_setting <- paste('<p style="font-size:', paste0(font_size, "px"), 
+                     '; color:', input$text_color, 
+                     '; letter-spacing:', paste0(letter_space, "px"), ';">')
+  txt <- paste(p_setting, message, "</p>")
+  return(HTML(txt))
+}
+
+ratio_check <- function(input) {
+  # reference https://webaim.org/resources/contrastchecker/
+  ratio <- colorspace::contrast_ratio(input$text_color, "white")
+  msg <- paste("<strong>Contrast ratio:</strong>", round(ratio, digits = 2))
+  if (ratio < 3 | (ratio < 4.5 & input$font_size <= 18)) {
+    msg <- paste('<p style="color: #AD1010 ; font-size: 20 px ;">', 
+                 msg, '<strong>(Fail)</strong> </p>')
+  } else {
+    msg <- paste('<p style="color: #008540 ; font-size: 20 px  ;">', 
+                 msg, '<strong>(Pass)</strong> </p>')
+  }
+  return(HTML(msg))
 }
 
 font_size_color_matrix <- function() {
@@ -96,4 +116,37 @@ content_sources <- function() {
       "WCAG guidelines at W3.org</a>", "</ul>")
     return(HTML(sources))
 }
+
+filters_text <- function(input) {
+  my_filter <- "<b>Filters:</b>"
+  if (!is.null(input$species) && !input$species == "All") {
+    my_filter <- c(my_filter, paste("Species =", input$species))
+  }
+  if (!is.null(input$island) && !input$island == "All") {
+    my_filter <- c(my_filter, paste("Island =", input$island))
+  }
+  if (!is.null(input$study_name) && !input$study_name == "All") {
+    my_filter <- c(my_filter, paste("Study name =", input$study_name))
+  }
+  if (!is.null(input$sex) && !input$sex == "All") {
+    my_filter <- c(my_filter, paste("Sex =", input$sex))
+  }
+  if (!is.null(input$g_min)) {
+    my_filter <- c(my_filter, paste("Weight range =", input$g_min,
+                                              "to", input$g_max))
+  }
+  if (!is.null(input$date_range)) {
+    my_filter <- c(my_filter, paste("Date range =", input$date_range[1],
+                                              "to", input$date_range[2]))
+  }
+  if (length(my_filter) > 1) {
+    subtitle <- paste("<p>", my_filter[1], paste(my_filter[2:length(my_filter)],
+                                                 collapse = "; "), "</p>")
+  } else {
+    subtitle <- "<p><b>Filters:</b> None</p>"
+  }
+  
+  return(subtitle)
+}
+
 

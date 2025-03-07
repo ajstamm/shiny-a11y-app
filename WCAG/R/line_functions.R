@@ -26,6 +26,8 @@ draw_line <- function(df, input) {
   mymode <- tolower(gsub(" ", "", input$line_display)) 
       # "lines+markers", "lines"
   mypal <- input$chart_palette # colorbrewer
+  years <- names(table(d$year))
+  
 
   if (input$line_type == "No" & input$marker_type == "No") {
     p <- plotly::plot_ly(d, x = ~year, y = ~count, color = ~species,
@@ -52,6 +54,8 @@ draw_line <- function(df, input) {
                          connectgaps = FALSE, symbol = ~species,
                          hoverinfo = "text", textposition = "none") 
   }
+  p <- p |> plotly::layout(xaxis = list(title = "Year", tickvals = years),
+                           yaxis = list(title = "Count", rangemode = 'tozero'))
   if (input$chart_label == "Yes") {
     p <- p |> # plotly::layout(annotations = as.character(d$count)) # |>
       plotly::add_annotations(x = d$year, y = d$count, yshift = 10,

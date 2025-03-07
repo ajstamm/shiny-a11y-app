@@ -5,9 +5,26 @@
 sidebar <- function(df) {
   sidebarPanel(
     h3("Instructions"),
-    p("Please select your desired filters from the options provided for each 
-       tab. Content will update as you make changes."),
-    br(), br(),
+    p("Select your desired tab. Select your desired filters from the options 
+       provided for that tab. Content will update as you make changes."),
+    h3("Contents"),
+    tags$ul(
+      tags$li(strong("About data:"), 
+              "information about the dashboard"),
+      tags$li(strong("Individual data:"), 
+              "Line level penguin data"),
+      tags$li(strong("Summary data:"), 
+              "Penguin data summarized by island, species, and sex"),
+      tags$li(strong("Bar chart:"), 
+              "Bar chart of penguin species by island"),
+      tags$li(strong("Line chart:"), 
+              "Line chart of penguin species by year hatched"),
+      tags$li(strong("Text formatting:"), 
+              "Manipulate text size, spacing, and color"),
+    ),
+    conditionalPanel(condition = "input.my_tabs != 'tab_about'", 
+      h3("Filters")
+    ),
     # tab_text ----
     conditionalPanel(condition = "input.my_tabs == 'tab_text'",
       selectInput("text_color", label = p("Select desired font color:"),
@@ -111,28 +128,30 @@ main <- function(df) {
         uiOutput("sources_list"),
       ),
       # tab_indiv ----
-      tabPanel(title = "Individual data", value = "tab_indiv", br(), br(),
+      tabPanel(title = "Individual data", value = "tab_indiv", 
         DT::dataTableOutput("all_penguins")),
       # tab_sum ----
-      tabPanel(title = "Summary data", value = "tab_sum", br(), br(),
+      tabPanel(title = "Summary data", value = "tab_sum", 
         DT::dataTableOutput("sum_penguins")),
       # tab_bar ----
-      tabPanel(title = "Bar chart", value = "tab_bar", br(), br(),
+      tabPanel(title = "Bar chart", value = "tab_bar", 
+               h3("Bar chart of species by island"),
+               htmlOutput("bar_filters"),
                ggiraph::girafeOutput("bar_chart"),
-        # conditionalPanel(condition = "input.bar_fill == 'Plain'",
-        #                  plotly::plotlyOutput("bar_plain")),
-        # conditionalPanel(condition = "input.bar_fill == 'Textured'",
-        #                  shiny::plotOutput("bar_texture")),
-        br(), br(), br(),
-        dataTableOutput("bar_table"), br(), br(), br()
+               br(), br(), br(),
+               dataTableOutput("bar_table"), br(), br(), br()
       ),
       # tab_line ----
-      tabPanel(title = "Line chart", value = "tab_line", br(), br(),
-        plotly::plotlyOutput("line_chart"), br(), br(), br(),
-        dataTableOutput("line_table"), br(), br(), br()),
+      tabPanel(title = "Line chart", value = "tab_line", 
+               h3("Line chart of species by year hatched"),
+               htmlOutput("line_filters"),
+               plotly::plotlyOutput("line_chart"), br(), br(), br(),
+               dataTableOutput("line_table"), br(), br(), br()),
       # tab_text ----
-      tabPanel(title = "Text formatting", value = "tab_text", br(), br(), 
+      tabPanel(title = "Text formatting", value = "tab_text", 
+               h3("Experimenting with text"),
         htmlOutput("text_play"), 
+        htmlOutput("text_pass"),
         DT::dataTableOutput("font_matrix"), br(), br(),
         p("When is each text-to-background color ratio in the table above 
            acceptable?"),
