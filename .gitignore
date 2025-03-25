@@ -3,5 +3,6 @@
 .RData
 .Ruserdata
 WCAG/data/rejected/*
+WCAG/data/*
 texture-sound/www/*.wav
 texture-sound/www/*.pdf
