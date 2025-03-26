@@ -5,39 +5,43 @@ library(bslib)
  
  
 ui <- page_sidebar(
+  # test with shinya11y
+  shinya11y::use_tota11y(),
  
   # Add language at the top of the UI
   tags$html(lang = "en"),
 
-  title = "Hello Accessible Shiny!",
-  sidebar = sidebar(
-    #Presentation Notes: Double sided standards don't work. (Or we couldn't figure it out)
-    sliderInput(
-      inputId = "bins",
-      label = "Number of bins:",
-      min = 1,
-      max = 50,
-      value = 30
-    )
+  # App title ----
+  title = "Fun with irises",
+  # sidebar
+  sidebar = bslib::sidebar(
+    textInput("bins", value = 20, placeholder = 10, 
+              label = "Enter the number of bins to display in the chart:"),
+    selectInput("species", selectize = FALSE, 
+                label = "Select an iris species to display in the chart:",  
+                choices = c("All", unique(as.character(iris$Species))),
+                selected = "All"),
   ),
-  #Change uiOutput to match div container.
-  uiOutput("histogramContainer")
+  # outputs to main panel
+  h2("Drawing an interactable histogram of iris sepal widths"),
+  p("Select items in the sidebar to control the iris species and number of bins 
+     displayed. If the sidebar is not visible, click the chevron ('>') in the 
+     upper left cornerof the plot to open the sidebar."),
+  plotOutput("hist_plot")
 )
  
 server <- function(input, output) {
-  output$distPlot <- renderPlot({
-    x    <- faithful$waiting
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    hist(x, breaks = bins, col = "#007bc2", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
-  })
-  # Dynamic aria-label with bins
-  output$histogramContainer <- renderUI({
-    tags$div(
-      `aria-label` = paste("Histogram displaying the distribution of waiting times between Old Faithful eruptions using", input$bins, "bins."),
-      plotOutput(outputId = "distPlot")
-    )
+  output$hist_plot <- renderPlot({
+    if (!input$species == "All") {
+      i <- iris[which(iris$Species == input$species), ]
+    } else {
+      i <- iris
+    }
+    bins <- seq(min(iris$Sepal.Width), max(iris$Sepal.Width), 
+                length.out = as.numeric(input$bins) + 1)
+    hist(i$Sepal.Width, breaks = bins, col = "#007bc2", border = "white",
+         xlab = "Sepal width", main = "Histogram of sepal widths",
+         xlim = c(min(iris$Sepal.Width), max(iris$Sepal.Width)))
   })
 }
  
