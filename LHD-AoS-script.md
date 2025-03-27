@@ -1,3 +1,19 @@
+Web Accessibility in Online Dashboard Design, LHD Academy of Science National Conference, Virtual, January 29, 2025
+https://lhdacademyofscience.org/aos-national-conference/
+Video: 
+• Abby Stamm, Senior Health Informatician, Office of Data Strategy and Interoperability, Data Technical Assistance Unit, Minnesota Department of Health 
+• Eric Kvale, Senior Data Scientist, Retention Compliance, Office of Data Strategy and Interoperability, Data Technical Assistance Unit, Minnesota Department of Health (replaced by Angela Noll, data navigator)
+• Analise Dickinson, Data Scientist, Office of Data Strategy and Interoperability, Data Technical Assistance Unit, Minnesota Department of Health 
+This presentation will discuss Web Content Accessibility Guidelines (WCAG) standards in online dashboard design. We will cover the WCAG standards relevant for dashboard design and why they are important. We will provide examples of ways we have met them. We will also introduce dashboard features in Shiny that 
+go above and beyond current WCAG guidelines. 
+Participants will... 
+• Gain an understanding of Web Content Accessibility Guidelines (WCAG) standards relevant to online dashboard design. 
+• Explore the importance of incorporating WCAG standards to create inclusive and accessible dashboards. 
+• Examine real-world examples of how WCAG standards have been successfully implemented in dashboard design. 
+
+
+----------------------------------
+
 Presenters: Analise, Angela, Abby
 Date: 29 January 2025
 Title: Web Accessibility in Online Dashboard Design
