@@ -1,6 +1,16 @@
 library(shiny)
 data(iris)
 
+# add term definitions 
+# state: collapsed or expanded
+# modal table: instructions/warning of what to expect
+# how to create accessibility widget
+# spell out DSI in TS-relations slide
+# dragon - news blurb requesting testers?
+# dry run: ~45 minutes, so can extend ~15 minutes more
+# dark mode native to browsers, but better if site specific
+
+
 # Define UI for app that draws a histogram ----
 ui <- bslib::page_sidebar(
   

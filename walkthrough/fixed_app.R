@@ -15,8 +15,9 @@ ui <- page_sidebar(
   title = "Fun with irises",
   # sidebar
   sidebar = bslib::sidebar(
+    # keyboard focus not in slider
     textInput("bins", value = 20, placeholder = 10, 
-              label = "Enter the number of bins to display in the chart:"),
+              label = "Enter the number of bins to display in the chart (2 to 30):"),
     selectInput("species", selectize = FALSE, 
                 label = "Select an iris species to display in the chart:",  
                 choices = c("All", unique(as.character(iris$Species))),
@@ -26,7 +27,7 @@ ui <- page_sidebar(
   h2("Drawing an interactable histogram of iris sepal widths"),
   p("Select items in the sidebar to control the iris species and number of bins 
      displayed. If the sidebar is not visible, click the chevron ('>') in the 
-     upper left cornerof the plot to open the sidebar."),
+     upper left corner of the plot to open the sidebar."),
   plotOutput("hist_plot")
 )
  
@@ -37,8 +38,10 @@ server <- function(input, output) {
     } else {
       i <- iris
     }
+    b <- input$bins
+    if (is.na(as.numeric(b))) b <- 10
     bins <- seq(min(iris$Sepal.Width), max(iris$Sepal.Width), 
-                length.out = as.numeric(input$bins) + 1)
+                length.out = as.numeric(b) + 1)
     hist(i$Sepal.Width, breaks = bins, col = "#007bc2", border = "white",
          xlab = "Sepal width", main = "Histogram of sepal widths",
          xlim = c(min(iris$Sepal.Width), max(iris$Sepal.Width)))
