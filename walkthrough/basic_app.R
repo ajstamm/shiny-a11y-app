@@ -24,20 +24,15 @@ ui <- bslib::page_sidebar(
   
   # Sidebar panel for inputs ----
   sidebar = bslib::sidebar(
-    # slider for the number of hisogram bins
-    # convert to textbox
-    sliderInput(
-      inputId = "bins",
-      # improve label
-      label = "Number of bins:",
-      min = 1,
-      max = 50,
-      value = 30
-    ),
-    # dropdown to select species
+    # slider for the number of histogram bins
+    # convert to text box
+    sliderInput(inputId = "bins",
+                # improve label
+                label = "Number of bins:",
+                min = 2, max = 30, value = 15),
+    # drop-down to select species
     selectInput("species",  
-                # fix aria text
-                # selectize = FALSE, 
+                # selectize = FALSE, # fix aria text
                 # improve label
                 label = "Iris species:", 
                 choices = c("All", unique(as.character(iris$Species))),
@@ -61,10 +56,12 @@ server <- function(input, output) {
     b <- input$bins
     bins <- seq(min(iris$Sepal.Width), max(iris$Sepal.Width), 
                 length.out = as.numeric(b) + 1)
+    # add aria text
     hist(i$Sepal.Width, breaks = bins, col = "#007bc2", border = "white",
          xlab = "Sepal width", main = "Histogram of sepal widths",
          xlim = c(min(iris$Sepal.Width), max(iris$Sepal.Width)))
   })
+  # add table (non-image data)
 }
 
 shinyApp(ui = ui, server = server)

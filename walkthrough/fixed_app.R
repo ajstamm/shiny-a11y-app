@@ -17,7 +17,8 @@ ui <- page_sidebar(
   sidebar = bslib::sidebar(
     # keyboard focus not in slider
     textInput("bins", value = 20, placeholder = 10, 
-              label = "Enter the number of bins to display in the chart (2 to 30):"),
+              label = "Enter the number of bins to display in the chart 
+                       (2 to 30):"),
     selectInput("species", selectize = FALSE, 
                 label = "Select an iris species to display in the chart:",  
                 choices = c("All", unique(as.character(iris$Species))),
@@ -42,6 +43,10 @@ server <- function(input, output) {
     if (is.na(as.numeric(b))) b <- 10
     bins <- seq(min(iris$Sepal.Width), max(iris$Sepal.Width), 
                 length.out = as.numeric(b) + 1)
+    aria <- paste("Histogram of sepal widths for select iris species.",
+                  "Sepal widths range from", min(iris$Sepal.Width), "to", 
+                  max(iris$Sepal.Width), "with a mean of", 
+                  mean(iris$Sepal.Width))
     hist(i$Sepal.Width, breaks = bins, col = "#007bc2", border = "white",
          xlab = "Sepal width", main = "Histogram of sepal widths",
          xlim = c(min(iris$Sepal.Width), max(iris$Sepal.Width)))
