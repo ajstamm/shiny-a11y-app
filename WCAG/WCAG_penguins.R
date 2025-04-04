@@ -1,6 +1,6 @@
 # ----------<>----------<>----------<>----------<>----------<>---------- #
 # author:  abby stamm                                                    #
-# date:    started august 2024                                                   #
+# date:    started august 2024                                           #
 # purpose: create minimal shiny app using palmer penguins data to test   #
 #          text customization and keyboard and screen reader navigation  #
 # goal:    1. side menu with drop-down and text input                    #
@@ -48,8 +48,33 @@ server <- function(input, output) {
     return(df)
   })
 
-  # data tables ----
-  output$all_penguins <- DT::renderDT({
+  # data table: individual ----
+
+
+  # 
+  output$table_individual_title <- renderText({ 
+    my_title <- paste("<h2>", "Table of individual penguin data for", 
+                      input$species, "species", "</h2>")
+    return(HTML(my_title))
+  })
+  
+  output$table_sum_title <- renderText({ 
+    my_title <- paste("<h2>", "Table of penguin counts by region,", 
+                      "island, species, and sex", "</h2>")
+    return(HTML(my_title))
+  })
+  
+  output$table_individual_filters <- renderText({ 
+    my_filters <- filters_text(input)
+    return(HTML(my_filters))
+  })
+  
+  output$table_sum_filters <- renderText({ 
+    my_filters <- filters_text(input)
+    return(HTML(my_filters))
+  })
+  
+  output$table_individual_penguins <- DT::renderDT({
     df <- filtered_data() 
     if (ncol(df) > 1) {
       df <- df |> 
@@ -61,7 +86,7 @@ server <- function(input, output) {
     return(dt)
   }, server = FALSE)
   
-  output$sum_penguins <- DT::renderDT({
+  output$table_sum_penguins <- DT::renderDT({
     df <- filtered_data() 
     df <- summarize_penguins(df)
     dt <- table_penguins(df)
@@ -94,30 +119,37 @@ server <- function(input, output) {
   
   
   # bar charts ----
+  output$bar_title <- renderText({ 
+    my_title <- paste("<h2>", "Bar chart of", input$species, 
+                      "species by island", "</h2>")
+    return(HTML(my_title))
+  })
+  
   output$bar_filters <- renderText({ 
     my_filters <- filters_text(input)
     return(HTML(my_filters))
   })
-
   
   output$bar_chart <- ggiraph::renderGirafe({
     df <- filtered_data() 
     if (ncol(df) > 1) {
       p <- draw_bar(df, input)
+      g <- ggiraph::girafe(ggobj = p) 
+      alt_text <- paste("Bar chart of number of penguins of each species on each",
+                        "island. For species and counts, check the table below.")
+        
+      g <- htmlwidgets::onRender(g, paste("
+          function(el, x) {
+            el.setAttribute('role', 'img');
+            el.setAttribute('aria-label', '", alt_text, "');
+          }")
+      )
     } else {
-      p <- plotly_empty_plot(paste("No data are available for these filters.",
-                                   "Please select different filters."))
+      p <- gg_empty_plot(message = 
+                           paste("No penguins are available for these filters.",
+                                 "\n", "Please select different filters."))
+      g <- p
     }
-    g <- ggiraph::girafe(ggobj = p) 
-    alt_text <- paste("Bar chart of number of penguins of each species on each",
-                      "island. For species and counts, check the table below.")
-      
-    g <- htmlwidgets::onRender(g, paste("
-        function(el, x) {
-          el.setAttribute('role', 'img');
-          el.setAttribute('aria-label', '", alt_text, "');
-        }")
-    )
 
     return(g)
   })
@@ -131,7 +163,25 @@ server <- function(input, output) {
                   class = 'cell-border stripe', rownames = FALSE)
   })
   
+  output$bar_dl <- shiny::downloadHandler(
+    filename = function() {
+      filename = "counts-bar-species-island.csv"
+      return(filename)
+    },
+    content = function(file) {
+      df <- filtered_data()
+      df <- bar_table(df)
+      write.csv(df, file, row.names = FALSE, na = "")
+    }
+  )
+  
   # line charts ----
+  output$line_title <- renderText({ 
+    my_title <- paste("<h2>", "Line chart of", input$species, 
+                      "species by year hatched", "</h2>")
+    return(HTML(my_title))
+  })
+
   output$line_filters <- renderText({ 
     my_filters <- filters_text(input)
     return(HTML(my_filters))
@@ -166,6 +216,19 @@ server <- function(input, output) {
                   escape = FALSE, options = list(dom = 't'),
                   class = 'cell-border stripe', rownames = FALSE)
   })
+  
+  output$line_dl <- shiny::downloadHandler(
+    filename = function() {
+      filename = "counts-line-species-year.csv"
+      return(filename)
+    },
+    content = function(file) {
+      df <- filtered_data()
+      df <- line_table(df)
+      write.csv(df, file, row.names = FALSE, na = "")
+    }
+  )
+
 }
 
 # run app ----
