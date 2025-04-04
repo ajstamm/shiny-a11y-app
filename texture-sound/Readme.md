@@ -5,7 +5,8 @@ ways for users to access their information.
 
 ## Purpose of the app
 
-To illustrate how to include sound, braille, and text descriptions in a Shiny dashboard.
+To illustrate how to include sound, braille, and text descriptions in a Shiny 
+dashboard.
 
 ## Packages used
 

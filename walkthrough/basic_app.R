@@ -10,7 +10,11 @@
 #   - bslib: 
 #   - input: 
 #   - output: 
-# tags, html, uiOutput, div, server, ui, shinyApp function, libraries shiny and bslib
+#   - tags:
+#   - html: 
+#   - uiOutput:
+#   - shinyApp: 
+#   - div: 
 
 library(shiny)
 data(iris)
@@ -19,7 +23,6 @@ data(iris)
 ui <- bslib::page_sidebar(
   # App set-up ----
   title = "Fun with irises",
-  
   # shinya11y test
   
   # Sidebar panel for inputs ----
@@ -27,14 +30,12 @@ ui <- bslib::page_sidebar(
     # slider for the number of histogram bins
     # convert to text box
     sliderInput(inputId = "bins",
-                # improve label
-                label = "Number of bins:",
+                label = "Number of bins:", # improve label
                 min = 2, max = 30, value = 15),
     # drop-down to select species
     selectInput("species",  
                 # selectize = FALSE, # fix aria text
-                # improve label
-                label = "Iris species:", 
+                label = "Iris species:", # improve label
                 choices = c("All", unique(as.character(iris$Species))),
                 selected = "All"),
   ),
@@ -47,11 +48,8 @@ ui <- bslib::page_sidebar(
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   output$hist_plot <- renderPlot({
-    if (!input$species == "All") {
-      i <- iris[which(iris$Species == input$species), ]
-    } else {
-      i <- iris
-    }
+    i <- iris
+    if (!input$species == "All") i <- i[which(i$Species == input$species), ]
     # handle when input$bins is missing
     b <- input$bins
     bins <- seq(min(iris$Sepal.Width), max(iris$Sepal.Width), 
