@@ -7,7 +7,7 @@
 **Title:** Designing Inclusive Shiny Dashboards: Accessibility Best Practices and Innovations   
 **Proposed topic:** "Modern App Design: Showcases of aesthetically and functionally advanced Shiny apps."   
 **Level:** Intermediate?   
-**Proposed type:** 1.5 hour workshop preferred, else 20 minute talk   
+**Proposed type:** 1.5 hour workshop  
 
 [Slides on SharePoint](https://mn365.sharepoint.com/:p:/r/sites/MDH/datata/Shared%20Documents/Accessibility%20Resources/ShinyConf%202025/ShinyConf%20Presentation%202025.pptx)
 
