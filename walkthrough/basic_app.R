@@ -1,65 +1,73 @@
 # Author: Abby Stamm & Eric Kvale
 # Date: March 2025
 # Purpose: workshop script for ShinyConf 2025
-# 
-# Terminology
-#   - shiny:
-#   - server:
-#   - ui: 
-#   - sidebar:
-#   - bslib: 
-#   - input: 
-#   - output: 
-#   - tags:
-#   - html: 
-#   - uiOutput:
-#   - shinyApp: 
-#   - div: 
 
+# load data ----
 library(shiny)
 data(iris)
+df <- iris
 
-# Define UI for app that draws a histogram ----
-ui <- bslib::page_sidebar(
-  # App set-up ----
-  title = "Fun with irises",
-  # shinya11y test
-  
-  # Sidebar panel for inputs ----
-  sidebar = bslib::sidebar(
-    # slider for the number of histogram bins
-    # convert to text box
-    sliderInput(inputId = "bins",
-                label = "Number of bins:", # improve label
-                min = 2, max = 30, value = 15),
-    # drop-down to select species
-    selectInput("species",  
-                # selectize = FALSE, # fix aria text
-                label = "Iris species:", # improve label
-                choices = c("All", unique(as.character(iris$Species))),
-                selected = "All"),
-  ),
-  
-  # Output: Histogram ----
-  # add dashboard instructions
-  plotOutput("hist_plot")
+# define sidebar ----
+sidebar <- function(df) {
+  sidebarPanel(
+    # Input slider for the number of bins
+    sliderInput(inputId = "bins", label = "Number of bins:",
+                min = 2, max = 29, value = 15),
+    # keyboard focus not visible in slider
+    # keyboard does not work at all with double-headed slider
+    # add clearer instructions
+    selectInput("species",  # selectize = FALSE, 
+                label = "Iris species:", 
+                choices = c("all", unique(as.character(df$Species))),
+                selected = "all")
+  )
+}
+
+# define main panel ----
+main <- function(df) {
+  mainPanel(
+    # add dashboard orientation 
+    # add text description of plot
+
+    plotOutput("hist_plot")
+    # could also add table and data download
+  )
+}
+
+ui <- fluidPage(
+  # dashboard set-up ----
+  # test with shinya11y
+
+  # Add language at the top of the UI
+
+  # App title 
+
+  h1("Fun with irises"),
+  # dashboard layout ----
+  sidebarLayout(
+    sidebar(df),
+    main(df)
+  )
 )
- 
+
+
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   output$hist_plot <- renderPlot({
     i <- iris
-    if (!input$species == "All") i <- i[which(i$Species == input$species), ]
+    if (!input$species == "all") i <- i[which(i$Species == input$species), ]
     # handle when input$bins is missing
-    b <- input$bins
-    bins <- seq(min(iris$Sepal.Width), max(iris$Sepal.Width), 
-                length.out = as.numeric(b) + 1)
+    b <- as.numeric(input$bins)
+    bins <- seq(2, 4.4, length.out = b + 1)
     # add aria text
-    hist(i$Sepal.Width, breaks = bins, col = "#007bc2", border = "white",
-         xlab = "Sepal width", main = "Histogram of sepal widths",
-         xlim = c(min(iris$Sepal.Width), max(iris$Sepal.Width)))
+    p <- hist(i$Sepal.Width, breaks = bins, col = "#005bc2", border = "white",
+              main = paste("Histogram of sepal widths for", 
+                           input$species, "irises."),
+              xlab = "Sepal width", xlim = c(2, 4.5))
+    return(p)
   })
-  # add table (non-image data)
+  # add description of plot (non-image data)
+  
 }
 
 shinyApp(ui = ui, server = server)

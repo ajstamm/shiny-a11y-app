@@ -1,5 +1,4 @@
 library(shiny)
-data(iris)
 
 # add term definitions 
 # state: collapsed or expanded
@@ -9,57 +8,103 @@ data(iris)
 # dragon - news blurb requesting testers?
 # dry run: ~45 minutes, so can extend ~15 minutes more
 # dark mode native to browsers, but better if site specific
-
+data(iris)
+df <- iris
 
 # Define UI for app that draws a histogram ----
-ui <- bslib::page_sidebar(
-  
-  # App title ----
-  title = "Fun with irises",
-  # Sidebar panel for inputs ----
-  sidebar = bslib::sidebar(
+sidebar <- function(df) {
+  sidebarPanel(
+  # Sidebar panel for inputs 
     # Input: Slider for the number of bins ----
-    sliderInput(
-      inputId = "bins",
-      label = "Number of bins:",
-      min = 1,
-      max = 50,
-      value = 30
-    ),
+    sliderInput(inputId = "bins", label = "Number of bins:",
+                min = 2, max = 30, value = 15),
+    # keyboard focus not visible in slider
+    # keyboard does not work at all with double-headed slider
+    # "Enter the number of bins to display in the chart (2 to 30):"
+    # textInput("bins", value = 20, placeholder = 10, 
+    #           label = "Number of bins:"),
+    # "Select your desired iris species:"
     selectInput("species", label = "Iris species:", selectize = FALSE,  # 
-                choices = c("All", unique(as.character(iris$Species))),
-                selected = "All"),
-    selectInput("measure", label = "Iris species:",  # selectize = FALSE, 
-                choices = names(iris)[1:4], selected = names(iris)[1]),
-  ),
-  # Output: Histogram ----
-  h2("Histogram of iris sepal widths"),
-  plotOutput(outputId = "hist_plot")
+                choices = c("all", unique(as.character(df$Species))),
+                selected = "all"),
+    # Select your desired measurement:"
+    selectInput("measure", label = "Measurement:",  # selectize = FALSE, 
+                choices = names(df)[1:4], selected = names(df)[1]),
+  )
+}
+
+main <- function(df) {
+  # main panel
+  mainPanel(
+    h2("Histogram of iris measurements"),
+    textOutput("hist_desc"),
+    plotOutput("hist_plot")
+    # could also add table and data download
+  )
+}
+
+ui <- fluidPage(
+  # dashboard set-up ----
+  # test with shinya11y
+  # shinya11y::use_tota11y(),
+  # Add language at the top of the UI
+  tags$html(lang = "en"),
+  # App title 
+  tags$title("Fun with irises"),
+  h1("Fun with irises"),
+  # dashboard layout ----
+  sidebarLayout(
+    sidebar(df),
+    main(df)
+  )
 )
  
-# Define server logic required to draw a histogram ----
+# Define server logic 
 server <- function(input, output) {
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
   output$hist_plot <- renderPlot({
-    if (!input$species == "All") {
+    if (!input$species == "all") {
       i <- iris[which(iris$Species == input$species), ]
     } else {
       i <- iris
     }
+    if (is.na(input$measure)) input$measure <- "Sepal.Width"
     lims <- iris[ , input$measure]
     x <- i[ , input$measure]
+    m <- gsub("[.]", " ", input$measure)
     bins <- seq(min(lims), max(lims), length.out = input$bins + 1)
-    hist(x, breaks = bins, col = "#007bc2", border = "white",
+    p <- hist(x, breaks = bins, col = "#007bc2", border = "white",
          xlab = input$measure,
-         main = "Histogram of sepal lengths",
+         main = paste("Histogram of", m, "for", input$species, "irises"),
          xlim = c(min(lims), max(lims)))
+    return(p)
+    },
+    alt = reactive({
+      i <- iris
+      if (!input$species == "all") i <- i[which(i$Species == input$species), ]
+      # if (is.na(input$measure)) input$measure <- "Sepal.Width"
+      m <- gsub("[.]", " ", input$measure)
+      x <- i[ , input$measure]
+      s <- input$species
+      aria <- paste("Histogram of", m, "in centimeters for", s, "irises.", m, 
+                    "ranges from", min(x), "to", max(x), "with mean of", 
+                    round(mean(x), digits = 2), "and mode of", 
+                    paste(DescTools::Mode(x), collapse = ", "))
+      return(aria)
+  }))
+  # add a plot description
+  output$hist_desc <- renderText({
+    i <- iris
+    if (!input$species == "all") i <- i[which(i$Species == input$species), ]
+    if (is.na(input$measure)) input$measure <- "Sepal.Width"
+    x <- i[ , input$measure]
+    m <- gsub("[.]", " ", input$measure)
+    s <- input$species
+    desc <- paste("Below is a histogram of", m, "for", s, "irises.", m, "for", 
+                  s, "irises ranges from", min(x), "cm to", max(x), 
+                  "cm with mean of", round(mean(x), digits = 2), "cm and mode of", 
+                  paste(DescTools::Mode(x), collapse = ", "), "cm.")
+    return(desc)
   })
 }
+
 shinyApp(ui = ui, server = server)
