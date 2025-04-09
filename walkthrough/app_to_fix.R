@@ -55,7 +55,8 @@ ui <- fluidPage(
 server <- function(input, output) {
   output$hist_plot <- renderPlot({
     i <- iris
-    if (!input$species == "all") i <- i[which(i$Species == input$species), ]
+    if (!input$species == "all") 
+      i <- i[which(i$Species == input$species), ]
     # handle when input$bins is missing
     b <- as.numeric(input$bins)
     bins <- seq(2, 4.4, length.out = b + 1)

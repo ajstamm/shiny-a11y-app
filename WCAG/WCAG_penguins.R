@@ -1,19 +1,19 @@
-# ----------<>----------<>----------<>----------<>----------<>---------- #
-# author:  abby stamm                                                    #
-# date:    started august 2024                                           #
-# purpose: create minimal shiny app using palmer penguins data to test   #
-#          text customization and keyboard and screen reader navigation  #
-# goal:    1. side menu with drop-down and text input                    #
-#          2. chart(s) with varied colors, symbols, patterns             #
-#          3. responsive table                                           #
-#          4. text that can change color, size, spacing                  #
-#          5. dynamic table and download file for each chart             #
-#          6. aria text for everything                                   #
-# ----------<>----------<>----------<>----------<>----------<>---------- #
+# -------<>----------<>----------<>----------<>----------<>------ #
+# author:  abby stamm                                             #
+# date:    started august 2024                                    #
+# purpose: create minimal shiny app using palmer penguins data    #
+#          to test text customization and keyboard and screen     #
+#          reader navigation                                      #
+# goal:    1. side menu with drop-down and text input             #
+#          2. chart(s) with varied colors, symbols, patterns      #
+#          3. responsive table                                    #
+#          4. text that can change color, size, spacing           #
+#          5. dynamic table and download file for each chart      #
+#          6. aria text for everything                            #
+# -------<>----------<>----------<>----------<>----------<>------ #
 
 # load shiny ----
 library(shiny)
-# library(htmlwidgets)
 
 # set up ----
 files <- list.files("R/", pattern = ".R$") # isolate "*.R" files only
@@ -64,9 +64,11 @@ server <- function(input, output) {
     df <- filtered_data() 
     if (ncol(df) > 1) {
       df <- df |> 
-        dplyr::mutate(individual_id = paste('<details><summary aria-label="', 
-                                   study_name, individual_id, sample_number, 
-                                   '">', individual_id, '</summary></details>'))
+        dplyr::mutate(individual_id = 
+                        paste('<details><summary aria-label="', 
+                              study_name, individual_id, 
+                              sample_number, '">', 
+                              individual_id, '</summary></details>'))
     }
     dt <- table_penguins(df)
     return(dt)
@@ -94,7 +96,8 @@ server <- function(input, output) {
   # text formatting ----
   output$text_play <- renderText({ 
     msg <- paste("To modify the formatting of this paragraph,",
-                 "select alternate colors and values in the sidebar to the left.",
+                 "select alternate colors and values in the", 
+                 "sidebar to the left.",
                  "Text will change in real time.")
     about <- format_text(input, message = msg)
     return(about)
@@ -133,8 +136,10 @@ server <- function(input, output) {
     if (ncol(df) > 1) {
       p <- draw_bar(df, input)
       g <- ggiraph::girafe(ggobj = p) 
-      alt_text <- paste("Bar chart of number of penguins of each species on each",
-                        "island. For species and counts, check the table below.")
+      alt_text <- paste("Bar chart of number of penguins of each", 
+                        "species on each island.",
+                        "For species and counts, check the table",
+                        "below.")
         
       g <- htmlwidgets::onRender(g, paste("
           function(el, x) {
@@ -144,8 +149,9 @@ server <- function(input, output) {
       )
     } else {
       p <- gg_empty_plot(message = 
-                           paste("No penguins are available for these filters.",
-                                 "\n", "Please select different filters."))
+                           paste("No penguins are available for",
+                                 "these filters.", "\n", 
+                                 "Please select different filters."))
       g <- p
     }
 
@@ -156,8 +162,8 @@ server <- function(input, output) {
     df <- filtered_data() 
     df <- bar_table(df)
     names(df) <- tools::toTitleCase(gsub("_", " ", names(df)))
-    DT::datatable(df, extensions = c('Responsive'), selection = "single",
-                  escape = FALSE, options = list(dom = 't'),
+    DT::datatable(df, extensions = c('Responsive'), escape = FALSE, 
+                  selection = "single", options = list(dom = 't'),
                   class = 'cell-border stripe', rownames = FALSE)
   })
   
@@ -189,8 +195,10 @@ server <- function(input, output) {
     df <- filtered_data() 
     if (ncol(df) > 1) {
       p <- draw_line(df, input)
-      alt_text <- paste("Line chart of number of penguins of each species by year",
-                        "hatched. For species and counts, check the table below.")
+      alt_text <- paste("Line chart of number of penguins of each",
+                        "species by year hatched.",
+                        "For species and counts, check the table",
+                        "below.")
       
       p <- htmlwidgets::onRender(p, paste("
         function(el, x) {
@@ -199,8 +207,9 @@ server <- function(input, output) {
         }")
       )
     } else {
-      p <- plotly_empty_plot(paste("No data are available for these filters.",
-                                   "Please select different filters."))
+      p <- plotly_empty_plot(paste("No data are available for",
+                                   "these filters. Please select",
+                                   "different filters."))
     }
     
     return(p)
@@ -210,8 +219,8 @@ server <- function(input, output) {
     df <- filtered_data() 
     df <- line_table(df)
     names(df) <- tools::toTitleCase(gsub("_", " ", names(df)))
-    DT::datatable(df, extensions = c('Responsive'), selection = "single",
-                  escape = FALSE, options = list(dom = 't'),
+    DT::datatable(df, extensions = c('Responsive'), escape = FALSE, 
+                  selection = "single", options = list(dom = 't'),
                   class = 'cell-border stripe', rownames = FALSE)
   })
   
