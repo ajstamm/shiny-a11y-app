@@ -49,27 +49,13 @@ server <- function(input, output) {
   })
 
   # data table: individual ----
-
-
-  # 
   output$table_individual_title <- renderText({ 
     my_title <- paste("<h2>", "Table of individual penguin data for", 
                       input$species, "species", "</h2>")
     return(HTML(my_title))
   })
   
-  output$table_sum_title <- renderText({ 
-    my_title <- paste("<h2>", "Table of penguin counts by region,", 
-                      "island, species, and sex", "</h2>")
-    return(HTML(my_title))
-  })
-  
   output$table_individual_filters <- renderText({ 
-    my_filters <- filters_text(input)
-    return(HTML(my_filters))
-  })
-  
-  output$table_sum_filters <- renderText({ 
     my_filters <- filters_text(input)
     return(HTML(my_filters))
   })
@@ -85,6 +71,18 @@ server <- function(input, output) {
     dt <- table_penguins(df)
     return(dt)
   }, server = FALSE)
+  
+  # data table: summary ----
+  output$table_sum_title <- renderText({ 
+    my_title <- paste("<h2>", "Table of penguin counts by region,", 
+                      "island, species, and sex", "</h2>")
+    return(HTML(my_title))
+  })
+  
+  output$table_sum_filters <- renderText({ 
+    my_filters <- filters_text(input)
+    return(HTML(my_filters))
+  })
   
   output$table_sum_penguins <- DT::renderDT({
     df <- filtered_data() 

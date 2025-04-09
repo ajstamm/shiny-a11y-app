@@ -69,7 +69,7 @@ server <- function(input, output, session) {
       peng <- gsub(" .+", "", input$species_sonify)
       t <- dplyr::filter(t, grepl(peng, species)) 
     }
-    t <- dplyr::mutate(t, index = row_number()) # Create index column
+    t <- dplyr::mutate(t, index = dplyr::row_number()) # Create index column
     return(t)
   })
   
@@ -171,13 +171,13 @@ server <- function(input, output, session) {
     content = function(file) {
       df <- filtered_data_brailler()
       lbl_x <- var_to_label(input$x_brailler)
-      title <- paste("Boxplot of", x_var, "\n for", input$species_brailler)
+      title <- paste("Boxplot of", lbl_x, "\n for", input$species_brailler)
       tactileR::brl_begin(file = generate_filename(input = input, 
                                                    type = "boxplot", 
                                                    package = "brailler"), 
                           pt = 11, paper = 'special', font = 'BRL')
       x <- unlist(df[, input$x_brailler])
-      p <- boxplot(x, xlab = input$species_brailler, ylab = x_var, 
+      p <- boxplot(x, xlab = input$species_brailler, ylab = lbl_x, 
                    main = title)
       tactileR::brl_end()
     }
