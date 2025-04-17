@@ -10,3 +10,4 @@ This repository was set up to illustrate accessibility features in Shiny apps. T
 
 * The *presentation scripts* folder contains scripts and slides for presentations we have given on dashboard accessibility.
 
+* To view Eric's *accessibility widget dashboard*, please visit his repo at  https://github.com/ekvale/shiny-conf-2025-accessibility-widget.
