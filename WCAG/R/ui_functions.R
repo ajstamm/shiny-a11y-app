@@ -140,6 +140,9 @@ main <- function(df) {
       # tab_bar ----
       tabPanel(title = "Bar chart", value = "tab_bar", 
                htmlOutput("bar_title"),
+               p("For specific values, mouse over the bars in the chart, 
+                  review the table below the chart, or download the data
+                  as a comma-separated values (CSV) file."),
                htmlOutput("bar_filters"),
                ggiraph::girafeOutput("bar_chart"), br(), br(), 
                div(downloadButton(outputId = "bar_dl", label = "Download Data",
@@ -150,6 +153,9 @@ main <- function(df) {
       # tab_line ----
       tabPanel(title = "Line chart", value = "tab_line", 
                htmlOutput("line_title"),
+               p("For specific values, mouse over the points in the chart, 
+                  review the table below the chart, or download the data
+                  as a comma-separated values (CSV) file."),
                htmlOutput("line_filters"),
                plotly::plotlyOutput("line_chart"), br(), br(), 
                div(downloadButton(outputId = "line_dl", label = "Download Data",
