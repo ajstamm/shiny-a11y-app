@@ -135,7 +135,37 @@ server <- function(input, output) {
     df <- filtered_data() 
     if (ncol(df) > 1) {
       p <- draw_bar(df, input)
-      g <- ggiraph::girafe(ggobj = p) 
+      if (input$bar_highlight == "Yes") {
+        g <- ggiraph::girafe(ggobj = p, height_svg = 3, pointsize = 14,
+               options = list(
+                 ggiraph::opts_tooltip(
+                   opacity = 1, offx = 12, offy = 12, use_fill = FALSE, 
+                   use_stroke = TRUE, # use_stroke = TRUE uses border color
+                   css = "color: Black; padding: 5px;
+                          background-color: White; 
+                          border-radius: 5px; font-family: sans-serif;
+                          border: 2px solid Black;
+                          box-shadow: 5px 5px 5px rgba(0,0,0,0.3);"),
+                # ggiraph::opts_sizing(width = .7), # resizes full chart
+                ggiraph::opts_hover(css = "stroke-width: 3; 
+                                           stroke: red !important ;"),
+                ggiraph::opts_hover_inv(css = "opacity: 0.4;")),
+              ggiraph::opts_selection(only_shiny = FALSE, type = "single", 
+                                      css = "stroke-width: 2;
+                                       stroke: yellow !important ;"))
+      } else {
+        g <- ggiraph::girafe(ggobj = p, height_svg = 3, pointsize = 14,
+               options = list(
+                 ggiraph::opts_tooltip(
+                   opacity = 1, offx = 12, offy = 12, use_fill = FALSE, 
+                   use_stroke = TRUE, # use_stroke = TRUE uses border color
+                   css = "color: Black; padding: 5px;
+                          background-color: White; 
+                          border-radius: 5px; font-family: sans-serif;
+                          border: 2px solid Black;
+                          box-shadow: 5px 5px 5px rgba(0,0,0,0.3);")))
+      }
+      
       alt_text <- paste("Bar chart of number of penguins of each", 
                         "species on each island.",
                         "For species and counts, check the table",

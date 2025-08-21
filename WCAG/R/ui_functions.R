@@ -97,7 +97,10 @@ sidebar <- function(df) {
                   choices = c("black", "red", "orange", "yellow", "green", 
                               "blue", "purple", "white"), 
                   selectize = FALSE, selected = "white"), 
-    ),
+      selectInput("bar_highlight", choices = c("Yes", "No"), 
+                  label = HTML("Select whether to highlight on hover:"),
+                  selectize = FALSE, selected = "Yes"), 
+      ),
     # tab_line ----
     conditionalPanel(condition = "input.my_tabs == 'tab_line'",
       selectInput("line_display", label = HTML("Select desired line display:"),

@@ -28,7 +28,7 @@ draw_bar <- function(df, input) {
   p <- ggplot2::ggplot(df, ggplot2::aes(x = factor(island), y = count,
                                         text = tip, fill = species,
                                         image = species)) +
-    ggiraph::geom_bar_interactive(ggplot2::aes(tooltip = tip),
+    ggiraph::geom_bar_interactive(ggplot2::aes(tooltip = tip, data_id = tip),
                                   stat = "identity", color = input$bar_border,
                                   position = ggplot2::position_dodge(
                                              preserve = "single"))
@@ -36,7 +36,8 @@ draw_bar <- function(df, input) {
   if (!input$bar_fill == 'Plain') {
     images <- paste0("textures/", c("x", "diamond", "ringoffset"), "_white.png")
     p <- p +
-      ggtextures::geom_textured_bar(stat = "identity", color = input$bar_border,
+      ggtextures::geom_textured_bar(stat = "identity", color = "transparent",
+                                    fill = "transparent", # override scale_fill_*
                                     position = ggplot2::position_dodge(
                                                preserve = "single")) +
       ggtextures::scale_image_manual(values = images) 
@@ -59,7 +60,6 @@ draw_bar <- function(df, input) {
                                 position = ggplot2::position_dodge(0.9)) 
   }
 
-  
   return(p)
 }
 
