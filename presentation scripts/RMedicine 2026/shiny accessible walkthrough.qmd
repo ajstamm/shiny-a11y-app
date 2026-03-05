@@ -1,0 +1,374 @@
+---
+title: "Making a dashboard accessible"
+format: 
+  html:
+    toc: true
+    toc-expand: 1
+    toc-location: left
+    toc-depth: 3
+    page-layout: full
+---
+
+## Introduction
+
+This demonstration begins with a draft dashboard called "Fun with  Irises", 
+which displays data from the `iris` dataset included with R. 
+The purpose of this demonstration is to introduce you to relatively easy to
+implement solutions for select accessibility issues that I have encountered 
+when designing my own dashboards. 
+
+What this demonstration does not cover:
+
+1. Font and color considerations to make your charts and text easier to read.
+1. Using sound and texture to make your content more accessible. 
+    For an example of how to implement the R packages
+    [`tactileR`](https://github.com/jooyoungseo/tactileR) and 
+    [`sonify`](https://cran.r-project.org/package=sonify), 
+    see the code for my 
+    [texture-sound app](https://github.com/ajstamm/shiny-a11y-app/tree/master/texture-sound).
+1. Making sure language, vocabulary, and messaging are appropriate for the 
+    intended audience.
+
+## The dashboard
+
+The "Fun with Irises" dashboard includes three tabs and a sidebar. 
+The tabs include:
+
+* Introduction. This tab is text only, with no interactive elements.
+* Barplot. This tab includes a bar plot that can be modified using 
+    the first three filters in the sidebar.
+* Histogram. This tab includes a histogram that can be modified using 
+    all of the filters in the sidebar.
+    
+Download the script to run the dashboard yourself at #TODO
+
+## Accessibility review results
+
+There are several free tools that can be used to test for accessibility in Shiny dashboards. We have listed three of the ones we use below.
+
+* [`shinya11y`](https://github.com/ewenme/shinya11y) is an R package 
+   for testing dashboard accessibility maintained by @ewenme on GitHub. 
+* [Accessible Name and Description Inspector (ANDI)](https://www.ssa.gov/accessibility/andi/help/install.html) 
+   is a bookmarklet for testing webpage accessibility maintained by 
+   the US Social Security Administration. 
+* [NonVisual Desktop Access (NVDA)](https://www.nvaccess.org/download/) is a 
+   screen reader maintained by the non-profit NV Access.
+
+By using these tools, and by attempting to navigate the dashboard using a 
+keyboard, we have discovered several issues with accessing information.
+For this demonstration, we will review the following issues.
+
+Screen reader users cannot access some content.
+
+1. The dashboard's language is not defined.
+1. The only way to access the information in the charts is by looking at them.
+2. There is no alternative text for charts.
+3. Some filter labels are ignored by the screen reader.
+
+Keyboard only users cannot access some content.
+
+5. The two slider filters lack keyboard focus.
+6. The double-headed slider filter does not work with the keyboard.
+
+Content is unclear or hard to understand.
+
+7. The dashboard does not have a title.
+8. There is only one way to navigate to different parts of the dashboard.
+9. There are no navigation instructions.
+10. There are no descriptions or explanations for the charts.
+11. The filters are labelled only with vague keywords.
+12. The filters display for all tabs, even ones where they are not relevant.
+
+This demonstration will cover how to address each of the above issues in turn.
+
+## Solutions to address screen reader issues
+
+### Define the dashboard language
+
+This fix is easy. I have added it to my dashboard template so that unless I am
+working on a non-English dashboard, I never need to think about it again.
+
+In the UI settings, add the line, `tags$html(lang = "en")`. 
+
+If you want to add a language other than English, one place you can find the correct tag is by using the [Language subtag lookup app](https://r12a.github.io/app-subtags/).
+
+To check this fix with ANDI, activate ANDI, choose "Structures" from the drop-down, expand the "more details" menu, and select "page title".
+
+
+### Add a second way to access chart information
+
+My preferred alternate method to display data is to include a table below each 
+chart. Basic tables are accessible by screen readers. 
+In a production app, I will also include a button to download the data as a 
+comma-separated value (CSV) file.
+
+In the server function, I will include a `renderDT` call for each table that 
+includes the code to create the same table that is used to generate the chart.
+These calls will look similar to the one below. 
+
+```{r ex_table_def}
+#| eval: FALSE
+output$bar_table <- DT::renderDT({
+  d <- filtered_data() |> group_by(Species) |> summarise(Count = n())
+  dt <- DT::datatable(d, rownames = FALSE, class = 'cell-border stripe',
+                      options = list(paging = FALSE, searching = FALSE))
+  return(dt)
+})
+```
+
+Then after the chart in the appropriate tab panel, I add the code,
+`dataTableOutput("bar_table")`.
+
+
+### Add alternative text to charts
+
+General guidance suggests that alternative (or alt) text should not be more 
+than 250 characters. If your alternative text is likely to be longer than that, 
+consider moving part of it to an explanatory paragraph with your chart. 
+Remember, basic unformatted text is fully accessible to screen readers. 
+A general guideline is that all information should be available in a table, 
+the alternative text, and an accompanying paragraph, 
+but details do not need to be repeated across all three.
+
+For this example, my alternative text includes basic summary information for my 
+chart and a note to review the accompanying table for more information. In all, 
+my alternative text is around 120 characters long. 
+Note that it does not include all of the information in the table. 
+
+```{r ex_bar_alt}
+#| eval: false
+output$bar_plot <- renderPlot({
+  d <- filtered_data() |> group_by(Species) |> dplyr::summarise(Count = n())
+  ggplot(data = d, aes(x = Species, y = Count)) +
+         geom_bar(stat = "identity", fill = "#003865") +
+         labs(title = "Frequency chart of iris species")
+  },
+  alt = reactive({
+    d <- filtered_data()
+    aria <- paste("Barplot of", input$species, "irises filtered on", 
+                  min(d$measure), "to", max(d$measure), input$measure, ".",
+                  "Refer to the table below the chart for values displayed.")
+    return(aria)
+  }))
+```
+
+The `alt` tag above assigns the text that the screen reader will read when it 
+reaches the chart.
+
+To check this fix with `shinya11y` and a mouse, click on the spectacles in the lower left, then click "Screen Reader Wand". Hover over the chart and read the alternate text in the wand window.
+
+
+### Ensure filters are screen reader accessible
+
+In the drop-down filters, the screen reader skips over the labels when reading 
+the values. 
+To address this, add the option `selectize = FALSE` in the input function. 
+Note that this only works if you do not need any of the javascript *selectize* 
+features.
+
+```{r ex_selectize}
+#| eval: false
+selectInput("species", selectize = FALSE, label = "Species:", selected = "All", 
+            choices = c("All", unique(as.character(iris$Species))))
+```
+
+To check this fix with NVDA and a mouse, activate NVDA then click the top of the sidebar and listen to NVDA read through the content.
+
+
+## Solutions to address keyboard access issues
+
+### Change the single-headed slider filter to a drop-down
+
+Sliders are problematic when navigating via keyboard. 
+When tabbing onto the single-ended slider, the keyboard focus does not show up, 
+so the only way to determine the cursor location is to click arrows to try to 
+change the bins.
+I design my dashboards to use drop-downs or open text fields instead.
+
+Here is a single-ended alternative to the bins slider.
+
+```{r ex_single_end}
+#| eval: false
+selectInput("bins", selectize = FALSE, label = "Number of bins:", 
+            choices = 1:20, selected = 10)
+```
+
+### Change the double-headed filter to two text boxes
+
+Sliders are problematic when navigating via keyboard. 
+When tabbing onto the double-ended slider, keyboard focus is not visible and 
+the individual ends cannot be modified with arrow keys. 
+I design my dashboards to use drop-downs or open text fields instead.
+
+Here is a double-ended alternative to the measurements slider. Note that they default to the minimum and maximum values, respectively.
+For a production-ready dashboard, I might include checks for reasonable numeric 
+values and whether the minimum and maximum values are swapped.
+
+```{r ex_double_end}
+#| eval: false
+splitLayout(
+  textInput("range_min", label = HTML("Minimum<br>", measure, ":"), 
+            placeholder = min(i$measure), value = min(i$measure)),
+  textInput("range_max", label = HTML("Maximum<br>", measure, ":"), 
+            placeholder = max(i$measure), value = max(i$measure))
+)
+```
+
+
+## Solutions for issues with understanding
+
+### Add a browser tab title
+
+This fix is easy. I have added it to my dashboard template so that aside from 
+changing the dashboard's title, I never need to think about it again.
+
+The `h1()` command in the UI settings sets the title within your application. 
+However, the tab in the browser contains only numbers for the title. For users 
+relying in tab names to locate content, this is confusing.
+
+To add a tab title, add the line `tags$title("Fun with irises")` in the UI 
+settings. 
+I prefer to add this line near the app title. 
+If the app title is short, I will use the same title in both places. 
+If the app title is long, I will use a shortened version for the tab title.
+
+To check this fix with ANDI, activate ANDI, choose "Structures" from the drop-down, expand the "more details" menu, and select "page title".
+
+
+
+### Ensure there are at least two navigation methods
+
+The only way to navigate to the different parts of the dashboard is to click on 
+the tabs. There are two issues with that. First, not everyone may realize the 
+tabs are clickable. Second, someone using a screen reader will have no idea 
+what the tabs are or that there are more than one until after the screen reader 
+finishes reading the sidebar. 
+
+To address both of these issues, I like to include a brief, persistent table of 
+contents at the top of the sidebar with internal links to the tabs.
+
+There are three steps to adding internal links. 
+
+1. Ensure that your tabset panel and each of the tab panels inside the tabset 
+    panel all have unique and defined IDs. 
+    In the example here, the tabset panel has `id = "my_tabs"` and 
+    the barplot panel has `value = "tab_bar"`.
+
+2. Set up a reactive element for each tab. 
+    The one for the barplot tab looks like this. Note that 
+    `inputID` matches the tabset's ID and `selected` matches the tab's value.
+
+```{r ex_link_def}
+#| eval: false
+observeEvent(input$link_tab_bar, {
+  updateTabsetPanel(session, inputId = "my_tabs", selected = "tab_bar")
+})
+```
+
+3. In the sidebar, add the link to the reactive and a short explanation of the 
+    link. I like to use a list format, which I set up using The HTML tags 
+    `<ul>` and `<li>` with the syntax shown below.
+
+```{r ex_link_call}
+#| eval: false
+tags$ul(
+  tags$li(strong(actionLink("link_tab_bar", "Barplot")), "- Bar chart")
+)
+```
+
+
+
+### Add navigation instructions
+
+The table of contents will provide some additional instructions. 
+Within each chart tab, I will include some additional information about 
+what to find where.
+
+```{r ex_instruc}
+#| eval: false
+p('Select items in the sidebar to control the iris species, measure, and 
+   measure limits to display. If the sidebar is not visible, open it by 
+   clicking the chevron (">") or "toggle sidebar" label.')
+```
+
+
+
+### Add chart explanations
+
+Text explanations for charts are useful for reducing the amount of information 
+you need to include in alternative text. 
+They are also useful for people who have trouble reading charts. 
+Ideally your explanation should include why the chart matters and 
+what you want the user to take away from it. 
+
+In this example, the point is for you to learn the code, 
+not to create a production-ready dashboard with a specific purpose, 
+so the chart description here is not very meaningful.
+
+```{r ex_hist_desc}
+#| eval: false
+output$hist_desc <- shiny::renderText({
+  d <- filtered_data()
+  desc <- paste("This histogram shows", input$measure, "ranging from", 
+                min(d$measure), "to", max(d$measure), "cm for", input$species, 
+                "irises. The median is", median(d$measure), "cm and the mean is",
+                round(mean(d$measure), digits = 2), "cm.")
+  return(paste("<p>", HTML(desc), "</p>"))
+})
+```
+
+Then before the chart in the appropriate tab panel, I add the code,
+`htmlOutput("hist_desc")`.
+
+
+### Clearly define all filters
+
+Filters of only one or two words may not be understandable to the user. 
+Any time you require user input, ensure your request is clear. 
+For example, instead of requesting "Height", consider if one of the following 
+would work better.
+
+* Enter your estimated height in inches as a whole number
+* Your height without shoes in centimeters
+* Your height at your last doctor's visit in feet
+
+In the sidebar filter, "Measure" is a vague, unclear term. 
+Let's modify it to clarify what we are asking.
+
+```{r ex_label}
+#| eval: false
+selectInput("measure", selectize = FALSE,
+            label = "Select the measurement to filter on for the chart:", 
+            choices = names(iris)[1:4], selected = names(iris)[1])
+```
+
+
+### Display filters only for the relevant tabs
+
+Right now the filters are visible no matter which tab we select. 
+However, none of them are relevant for the introduction tab and 
+the bins filter is not relevant for the barplot tab. Let's fix that.
+
+To control when a filter is displayed, we use the following code to create 
+conditional panels. Note that below, one conditional panel is nested inside 
+another. The first panel's content only displays when the selected tab is 
+*not* the introduction (indicated with `!=`). The second panel has an 
+additional filter, to only display when the histogram tab is selected 
+(indicated with `==`). Note that the conditions are strings that use 
+slightly different format than R code and include nested quotes.
+
+```{r ex_condition}
+#| eval: false
+    conditionalPanel(
+      condition = "input.my_tabs != 'tab_intro'",
+      # display this content and 
+      conditionalPanel(
+        condition = "input.my_tabs == 'tab_hist'",
+        # display this content
+      )
+    )
+```
+
+
+
+

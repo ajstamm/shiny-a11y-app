@@ -1,0 +1,108 @@
+---
+title: "Demo for R/Medicine"
+format: html
+---
+
+
+## Demo (1 hr)
+
+Include the following:
+
+* Detailed instruction on a topic
+* Website and repo
+* Option to code along
+* Detailed outline of the planned content
+* “run of show” indicating how much time will be spent on instruction, live coding, interactive demo, participant activity, in what order
+* 2-3 minute recorded explanation of the demo
+
+----
+
+
+Our demonstration will cover how to address several accessibility checks in a Shiny dashboard. We have chosen checks related to screen reader use, keyboard use, and understanding that are often overlooked by websites that discuss accessibility in Shiny.
+
+We will begin with about five minutes of instruction to introduce the dashboard and the accessibility checks that the dashboard failed. The bulk of the presentation will cycle through each of the failed checks. For each check, we will demonstrate the issue, show a way to revise the dashboard code to address it, and demonstrate how the check passes on the fixed dashboard.
+
+The failed checks include the following.
+
+Screen reader users cannot access some content.
+
+1. The only way to access the information in the charts is by looking at them.
+2. There is no alternative text for charts.
+3. Some filter labels are ignored by the screen reader.
+4. The dashboard's language is not defined.
+
+Keyboard only users cannot access some content.
+
+5. Some filters lack keyboard focus.
+6. One filter does not work with the keyboard.
+
+Content is unclear or hard to understand.
+
+7. The dashboard does not have a title.
+8. There is only one way to navigate to different parts of the dashboard.
+9. There are no navigation instructions.
+10. There are no descriptions or explanations for the charts.
+11. The filters are labelled only with vague keywords.
+12. The filters display for all tabs, even ones where they are not relevant.
+
+To demonstrate how to run the checks, we will use the free accessibility tools [`shinya11y`](https://github.com/ewenme/shinya11y) and 
+[Accessible Name and Description Inspector (ANDI)](https://www.ssa.gov/accessibility/andi/help/install.html).
+
+All files, including the presentation, starting script, and suggested solution script, will be downloadable from GitHub if attendees wish to code along.
+
+
+
+
+----
+
+Cycle through instruction & live coding with some demo (30%, 50%, 20%? No planned participant activity, but post content on GitHub so they can follow along if they want.) Plan dry run in tidy tuesday.
+
+We will begin with a simple three-tab dashboard with a sidebar. 
+We will cover some (free) tools we use to assess dashboard accessibility and share a selection of previously identified accessibility issues.
+We will review and address each issue one by one, then rerun our previous checks.
+
+Incorporating accessibility into Shiny dashboards
+https://github.com/ajstamm/shiny-a11y-app
+
+* add folder with all files for participants to download 
+* add folder on my website for various tutorials I've written
+
+Note where we presented similar info and link
+
+
+-----
+
+Script:
+
+Our demonstration will cover how to address several accessibility checks in a Shiny dashboard. We have chosen checks related to screen reader use, keyboard use, and understanding. We have noted that these are often overlooked by websites that discuss accessibility in Shiny.
+
+We will begin with about five minutes of instruction to introduce the dashboard and several of the accessibility checks that the dashboard failed. The bulk of the presentation will cycle through each of the failed checks. 
+
+For each check, we will demonstrate the issue, then we will show one way to revise the dashboard code to address the issue. Last, we will demonstrate how the check passes on the fixed dashboard.
+
+For example, the browser tab has only a series of numbers listed, not a title. In the demonstration, we discuss how to add a title and ways set up the code that we have found make updating the title easier in our own work. We show where in the script to add the title code, then run the revised dashboard that passes the check.
+
+We will provide the demonstration content on GitHub, with links to download both the script that fails the checks, so participants can follow along, and the script that passes all checks for both the bar chart and the histogram. The demonstration will only cover fixes for one or the other of the charts.
+
+
+
+
+
+
+
+
+
+## Talk (20 min)
+
+* presentation of methodology, a study or project, or an example or case study relevant to one (or more) of our fields of interest
+* R-based tools having a substantial role
+* make it interesting for attendees
+* All accepted speakers will be required to pre-record their talk and submit the video by Monday, April 27th.
+* Answer:
+    * What are you hoping to get from your presentation?
+    * What do you expect the audience to gain from your presentation?
+    * How will your presentation help better the R Medicine ecosystem?
+
+
+
+
