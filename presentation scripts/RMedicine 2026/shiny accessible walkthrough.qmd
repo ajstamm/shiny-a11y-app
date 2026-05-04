@@ -29,6 +29,20 @@ What this demonstration does not cover:
 1. Making sure language, vocabulary, and messaging are appropriate for the 
     intended audience.
 
+## Files included
+
+1. [Non-accessible app](nonaccessible_app.R): Download this file if you want 
+    to practice adding the fixes below to your own app.
+1. [Accessible app](accessible_app.R): This version of the app already includes 
+    all of the fixes described below. 
+1. [Demonstration outline](demo_outline.md): This file contains a brief outline 
+    of the demonstration content.
+1. [Demonstration abstract](demo_abstract.qmd): This file contains the abstract
+    and notes for the demonstration.
+1. [Walkthrough quarto file](shiny accessible walkthrough.qmd): This is the 
+    quarto version of the readme file.
+
+
 ## The dashboard
 
 The "Fun with Irises" dashboard includes three tabs and a sidebar. 
@@ -40,7 +54,8 @@ The tabs include:
 * Histogram. This tab includes a histogram that can be modified using 
     all of the filters in the sidebar.
     
-Download the script to run the dashboard yourself at #TODO
+Download the [Non-accessible app](nonaccessible_app.R) to run the dashboard. 
+Use this file if you want to practice the demonstration content yourself. 
 
 ## Accessibility review results
 
@@ -53,6 +68,9 @@ There are several free tools that can be used to test for accessibility in Shiny
    the US Social Security Administration. 
 * [NonVisual Desktop Access (NVDA)](https://www.nvaccess.org/download/) is a 
    screen reader maintained by the non-profit NV Access.
+* [Web Accessibility Evaluation Tool (WAVE)](https://wave.webaim.org/) is a 
+   suite of tool maintained by Web Accessibility in Mind (WebAIM) at Utah 
+   State University.
 
 By using these tools, and by attempting to navigate the dashboard using a 
 keyboard, we have discovered several issues with accessing information.
@@ -90,9 +108,12 @@ working on a non-English dashboard, I never need to think about it again.
 
 In the UI settings, add the line, `tags$html(lang = "en")`. 
 
-If you want to add a language other than English, one place you can find the correct tag is by using the [Language subtag lookup app](https://r12a.github.io/app-subtags/).
+If you want to add a language other than English, one place you can find the
+correct tag is by using the 
+[Language subtag lookup app](https://r12a.github.io/app-subtags/).
 
-To check this fix with ANDI, activate ANDI, choose "Structures" from the drop-down, expand the "more details" menu, and select "page title".
+To check this fix with ANDI, activate ANDI, choose "Structures" from the 
+drop-down, expand the "more details" menu, and select "page title".
 
 
 ### Add a second way to access chart information
