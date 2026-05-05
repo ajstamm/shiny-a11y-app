@@ -39,7 +39,7 @@ What this demonstration does not cover:
     of the demonstration content.
 1. [Demonstration abstract](demo_abstract.qmd): This file contains the abstract
     and notes for the demonstration.
-1. [Walkthrough quarto file](shiny accessible walkthrough.qmd): This is the 
+1. [Walkthrough quarto file](walkthrough.qmd): This is the 
     quarto version of the readme file.
 
 
