@@ -12,7 +12,7 @@ ui <- bslib::page_sidebar(
   # App set-up ----
   # App title 
   # tags$title("Fun with irises"),
-  h1("Fun with irises"),
+  h1("Fun with irises: Learning accessibility"),
 
   # shinya11y test
   shinya11y::use_tota11y(),
@@ -54,17 +54,20 @@ ui <- bslib::page_sidebar(
                 choices = names(iris)[1:4],
                 selected = names(iris)[1]),
     # slider for minimum and maximum value of measure
-    # convert to textbox
+    # convert to textbox - see output$select_measure
+    uiOutput("select_measure"),
     # conditionalPanel(
     #   condition = "input.my_tabs == 'tab_hist'",
-    uiOutput("select_measure"),
     # slider for the number of histogram bins
-    # convert to textbox
     # remove for bar chart/intro
     sliderInput(inputId = "bins",
                 # improve label
                 label = "Number of bins:",
                 min = 1, max = 20, value = 10)
+    # convert to textbox
+    # selectInput("bins", selectize = FALSE,
+    #             label = "Select the number of columns to display:", 
+    #             choices = 1:20, selected = 10),
     #   )
     # )
 ),
@@ -89,7 +92,7 @@ ui <- bslib::page_sidebar(
                     tags$li("Are the filters keyboard accessible?")),
                   h3("Accessible charts"),
                   tags$ul(
-                    tags$li("Do the chart colors cotrast sufficiently?"),
+                    tags$li("Do the chart colors contrast sufficiently?"),
                     tags$li("Are the font size and spacing appropriate?"),
                     tags$li("Do the title and axis labels exist? Are they easy 
                              to read?"),
@@ -132,7 +135,10 @@ server <- function(input, output, session) {
     meas <- if (is.na(input$measure)) "Sepal.Length" else input$measure
     i <- iris
     i$measure <- i[, meas]
-    sliderInput("range", paste("Range of", input$measure, "to display"), 
+    sliderInput("range", 
+                paste("Range of", input$measure, "to display"), 
+    #           paste("Select the range of", input$measure, 
+    #                 " to filter for the chart:"), 
                 min = min(i$measure), max = max(i$measure), 
                 value = c(min(i$measure), max(i$measure)))
     # splitLayout(
