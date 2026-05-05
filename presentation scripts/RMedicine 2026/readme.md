@@ -31,18 +31,18 @@ What this demonstration does *not* cover:
 
 ## Files included
 
-1. [Non-accessible app](nonaccessible_app.R): Download this file if you want 
-    to practice adding the fixes below to your own app.
-1. [Accessible app](accessible_app.R): This version of the app already includes 
-    all of the fixes described below. 
-1. [Demonstration outline](demo_outline.md): This file contains a brief outline 
-    of the demonstration content.
-1. [Demonstration abstract](demo_abstract.qmd): This file contains the abstract
-    and notes for the demonstration.
-1. [Walkthrough quarto file](walkthrough.qmd): This is the 
-    quarto version of the readme file.
-1. [Presentation slides](presentation.pdf): PDF of the introduction and
-    conclusion slides.
+1. [Non-accessible app](nonaccessible_app.R): 
+    Download this file if you want to practice adding the fixes described below to your own app.
+1. [Final accessible app](final_accessible_app.R): 
+    This file already includes all of the fixes described below. Use it to check your work.
+1. [Demonstration outline](RMedicine_accessibility_demo_outline.md): 
+    This file contains a brief outline of the demonstration content.
+1. [Demonstration abstract](RMedicine_accessibility_demo_abstract.qmd): 
+    This file contains the abstract and notes for the demonstration.
+1. [Demonstration script quarto file](RMedicine_accessibility_demo_script.qmd): 
+    This is the quarto version of the readme file.
+1. [Demonstration introduction and conclusion slides](RMedicine_accessibility_demo_slides.pdf): 
+    PDF of the introduction and conclusion slides.
 
 ## The dashboard
 
