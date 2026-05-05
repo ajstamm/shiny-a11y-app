@@ -79,8 +79,8 @@ ui <- bslib::page_sidebar(
                 # dashboard instructions
                 tabPanel(title = "Introduction", value = "tab_intro", 
                   p("This dashboard is designed to demonstrate some simple ways 
-                     to make your Shiny app more accessible. Here are some 
-                     things to consider."),
+                     to make your Shiny app more accessible. Here are a few  
+                     common issues to consider."),
                   h3("Accessible sidebar"),
                   tags$ul(
                     tags$li("Is there a sitemap, table of contents, or other 
@@ -213,6 +213,7 @@ server <- function(input, output, session) {
   #                 min(d$measure), "to", max(d$measure), "centimeters.")
   #   return(paste("<p>", HTML(desc), "</p>"))
   # })
+  
   # output$hist_desc <- shiny::renderText({
   #   d <- filtered_data()
   #   desc <- paste("This histogram shows", input$measure, "ranging from", 

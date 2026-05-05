@@ -101,9 +101,9 @@ For this demonstration, we will review the following issues.
 
 This demonstration will cover how to address each of the above issues in turn.
 
-## Solutions to address screen reader issues
+## 1. Solutions to address screen reader issues
 
-### Define the dashboard language
+### 1.i. Define the dashboard language
 
 This fix is easy. I have added it to my dashboard template so that unless I am
 working on a non-English dashboard, I never need to think about it again.
@@ -118,7 +118,7 @@ To check this fix with ANDI, activate ANDI, choose "Structures" from the
 drop-down, expand the "more details" menu, and select "page title".
 
 
-### Add a second way to access chart information
+### 1.ii. Add a second way to access chart information
 
 My preferred alternate method to display data is to include a table below each 
 chart. Basic tables are accessible by screen readers. 
@@ -142,7 +142,7 @@ Then after the chart in the appropriate tab panel, I add the code,
 `dataTableOutput("bar_table")`.
 
 
-### Add alternative text to charts
+### 1.iii. Add alternative text to charts
 
 General guidance suggests that alternative (or alt) text should not be more 
 than 250 characters. If your alternative text is likely to be longer than that, 
@@ -179,7 +179,7 @@ reaches the chart.
 To check this fix with `shinya11y` and a mouse, click on the spectacles in the lower left, then click "Screen Reader Wand". Hover over the chart and read the alternate text in the wand window.
 
 
-### Ensure filters are screen reader accessible
+### 1.iv. Ensure filters are screen reader accessible
 
 In the drop-down filters, the screen reader skips over the labels when reading 
 the values. 
@@ -195,9 +195,9 @@ selectInput("species", selectize = FALSE, label = "Species:", selected = "All",
 To check this fix with NVDA and a mouse, activate NVDA then click the top of the sidebar and listen to NVDA read through the content.
 
 
-## Solutions to address keyboard access issues
+## 2. Solutions to address keyboard access issues
 
-### Change the single-headed slider filter to a drop-down
+### 2.i. Change the single-headed slider filter to a drop-down
 
 Sliders are problematic when navigating via keyboard. 
 When tabbing onto the single-ended slider, the keyboard focus does not show up, 
@@ -212,7 +212,7 @@ selectInput("bins", selectize = FALSE, label = "Number of bins:",
             choices = 1:20, selected = 10)
 ```
 
-### Change the double-headed filter to two text boxes
+### 2.ii. Change the double-headed filter to two text boxes
 
 Sliders are problematic when navigating via keyboard. 
 When tabbing onto the double-ended slider, keyboard focus is not visible and 
@@ -233,9 +233,9 @@ splitLayout(
 ```
 
 
-## Solutions for issues with understanding
+## 3. Solutions for issues with understanding
 
-### Add a browser tab title
+### 3.i. Add a browser tab title
 
 This fix is easy. I have added it to my dashboard template so that aside from 
 changing the dashboard's title, I never need to think about it again.
@@ -254,7 +254,7 @@ To check this fix with ANDI, activate ANDI, choose "Structures" from the drop-do
 
 
 
-### Ensure there are at least two navigation methods
+### 3.ii. Ensure there are at least two navigation methods
 
 The only way to navigate to the different parts of the dashboard is to click on 
 the tabs. There are two issues with that. First, not everyone may realize the 
@@ -294,7 +294,7 @@ tags$ul(
 
 
 
-### Add navigation instructions
+### 3.iii. Add navigation instructions
 
 The table of contents will provide some additional instructions. 
 Within each chart tab, I will include some additional information about 
@@ -308,7 +308,7 @@ p('Select items in the sidebar to control the iris species, measure, and
 
 
 
-### Add chart explanations
+### 3.iv. Add chart explanations
 
 Text explanations for charts are useful for reducing the amount of information 
 you need to include in alternative text. 
@@ -335,7 +335,7 @@ Then before the chart in the appropriate tab panel, I add the code,
 `htmlOutput("hist_desc")`.
 
 
-### Clearly define all filters
+### 3.v. Clearly define all filters
 
 Filters of only one or two words may not be understandable to the user. 
 Any time you require user input, ensure your request is clear. 
@@ -356,7 +356,7 @@ selectInput("measure", selectize = FALSE,
 ```
 
 
-### Display filters only for the relevant tabs
+### 3.vi. Display filters only for the relevant tabs
 
 Right now the filters are visible no matter which tab we select. 
 However, none of them are relevant for the introduction tab and 
