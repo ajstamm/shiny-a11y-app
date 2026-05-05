@@ -17,7 +17,7 @@ The purpose of this demonstration is to introduce you to relatively easy to
 implement solutions for select accessibility issues that I have encountered 
 when designing my own dashboards. 
 
-What this demonstration does not cover:
+What this demonstration does *not* cover:
 
 1. Font and color considerations to make your charts and text easier to read.
 1. Using sound and texture to make your content more accessible. 
@@ -41,6 +41,8 @@ What this demonstration does not cover:
     and notes for the demonstration.
 1. [Walkthrough quarto file](walkthrough.qmd): This is the 
     quarto version of the readme file.
+1. [Presentation slides](presentation.pdf): PDF of the introduction and
+    conclusion slides.
 
 ## The dashboard
 
@@ -56,7 +58,7 @@ The tabs include:
 Download the [Non-accessible app](nonaccessible_app.R) to run the dashboard. 
 Use this file if you want to practice the demonstration content yourself. 
 
-## Accessibility review results
+## Accessibility testing tools
 
 There are several free tools that can be used to test for accessibility in 
 Shiny dashboards. We have listed three of the ones we use below.
@@ -74,28 +76,28 @@ Shiny dashboards. We have listed three of the ones we use below.
 
 By using these tools, and by attempting to navigate the dashboard using a 
 keyboard, we have discovered several issues with accessing information.
+
+## Accessibility review results
+
 For this demonstration, we will review the following issues.
 
-Screen reader users cannot access some content.
+1. Screen reader users cannot access some content.
+    1. The dashboard's language is not defined.
+    1. The only way to access the information in the charts is by looking at them.
+    1. There is no alternative text for charts.
+    1. Some filter labels are ignored by the screen reader.
 
-1. The dashboard's language is not defined.
-1. The only way to access the information in the charts is by looking at them.
-2. There is no alternative text for charts.
-3. Some filter labels are ignored by the screen reader.
+2. Keyboard only users cannot access some content.
+    1. The two slider filters lack keyboard focus.
+    1. The double-headed slider filter does not work with the keyboard.
 
-Keyboard only users cannot access some content.
-
-5. The two slider filters lack keyboard focus.
-6. The double-headed slider filter does not work with the keyboard.
-
-Content is unclear or hard to understand.
-
-7. The dashboard does not have a title.
-8. There is only one way to navigate to different parts of the dashboard.
-9. There are no navigation instructions.
-10. There are no descriptions or explanations for the charts.
-11. The filters are labelled only with vague keywords.
-12. The filters display for all tabs, even ones where they are not relevant.
+3. Content is unclear or hard to understand.
+    1. The dashboard does not have a title.
+    1. There is only one way to navigate to different parts of the dashboard.
+    1. There are no navigation instructions.
+    1. There are no descriptions or explanations for the charts.
+    1. The filters are labelled only with vague keywords.
+    1. The filters display for all tabs, even ones where they are not relevant.
 
 This demonstration will cover how to address each of the above issues in turn.
 
