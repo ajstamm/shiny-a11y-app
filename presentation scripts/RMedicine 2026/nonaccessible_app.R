@@ -7,22 +7,21 @@ library(ggplot2)
 library(dplyr)
 data(iris)
 
-# Define UI for app that draws a histogram ----
 ui <- bslib::page_sidebar(
-  # App set-up ----
-  # App title 
+  # 3.i title -----
   # tags$title("Fun with irises"),
   h1("Fun with irises: Learning accessibility"),
 
   # shinya11y test
   shinya11y::use_tota11y(),
   
+  # 1.i language -----
   # Add language at the top of the UI
   # tags$html(lang = "en"),
   
-  # Sidebar panel for inputs ----
   sidebar = bslib::sidebar(
     # add table of contents
+    # 3.ii.b output links -----
     # h2("Contents"),
     # p("Select each tab to view its content."),
     # tags$ul(
@@ -38,6 +37,7 @@ ui <- bslib::page_sidebar(
     # conditionalPanel(
     #   condition = "input.my_tabs != 'tab_intro'",
     selectInput("species",  
+                # 1.iv filter label -----
                 # fix aria text
                 # selectize = FALSE, 
                 # improve label
@@ -48,7 +48,7 @@ ui <- bslib::page_sidebar(
     selectInput("measure",
                 # fix aria text
                 # selectize = FALSE, 
-                # improve label
+                # 3.v improve label -----
                 label = "Measure:", 
                 # label = "Select the measurement to filter on for the chart:", 
                 choices = names(iris)[1:4],
@@ -56,10 +56,12 @@ ui <- bslib::page_sidebar(
     # slider for minimum and maximum value of measure
     # convert to textbox - see output$select_measure
     uiOutput("select_measure"),
+    # 3.vi hide filters -----
+    # remove for bar chart/intro
     # conditionalPanel(
     #   condition = "input.my_tabs == 'tab_hist'",
+    # 2.i slider change -----
     # slider for the number of histogram bins
-    # remove for bar chart/intro
     sliderInput(inputId = "bins",
                 # improve label
                 label = "Number of bins:",
@@ -72,11 +74,9 @@ ui <- bslib::page_sidebar(
     # )
 ),
   
-  # Output: Histogram ----
   mainPanel(
     tabsetPanel(id = "my_tabs", 
-                # tab_intro ----
-                # add dashboard instructions
+                # dashboard instructions
                 tabPanel(title = "Introduction", value = "tab_intro", 
                   p("This dashboard is designed to demonstrate some simple ways 
                      to make your Shiny app more accessible. Here are some 
@@ -101,14 +101,16 @@ ui <- bslib::page_sidebar(
                 ),
                 tabPanel(title = "Barplot", value = "tab_bar", 
                   # h2("Drawing an interactive barplot of iris measurements"),
-                  # add navigation instructions
+                  # 3.iii instructions -----
                   # p('Select filters in the sidebar to control iris species, 
                   #    measure, and measure limits to display. If the sidebar 
                   #    is not visible, open it by clicking the chevron (">") 
                   #    or "toggle sidebar" label.'),
+                  # 3.iv.b output description -----
                   # add a plot description
                   # htmlOutput("bar_desc"), 
                   plotOutput("bar_plot"),
+                  # 1.ii.b output table -----
                   # add a table of the data
                   # dataTableOutput("bar_table")
                 ),
@@ -129,12 +131,12 @@ ui <- bslib::page_sidebar(
   )
 )
  
-# Define server logic required to draw a histogram ----
 server <- function(input, output, session) {
   output$select_measure <- shiny::renderUI({
     meas <- if (is.na(input$measure)) "Sepal.Length" else input$measure
     i <- iris
     i$measure <- i[, meas]
+    # 2.ii.a reformat ranges -----
     sliderInput("range", 
                 paste("Range of", input$measure, "to display"), 
     #           paste("Select the range of", input$measure, 
@@ -156,6 +158,7 @@ server <- function(input, output, session) {
       d <- iris
     }
     d$measure <- d[, input$measure]
+    # 2.ii.b read ranges -----
     d <- dplyr::filter(d, measure >= input$range[1], 
                        measure <= input$range[2])
     # d <- dplyr::filter(d, measure >= input$range_min, 
@@ -192,6 +195,7 @@ server <- function(input, output, session) {
                axis.title = element_text(size = 16), 
                plot.title = element_text(size = 18))
   },
+  # 1.iii alt text -----
   # alt = reactive({
   #   d <- filtered_data()
   #   aria <- paste("Barplot of", input$species, "irises filtered on", 
@@ -201,7 +205,7 @@ server <- function(input, output, session) {
   # })
   )
   
-  # chart descriptions ----
+  # 3.iv.a chart description ----
   # output$bar_desc <- shiny::renderText({
   #   d <- filtered_data()
   #   desc <- paste("This bar chart shows", input$species, 
@@ -219,7 +223,7 @@ server <- function(input, output, session) {
   #   return(paste("<p>", HTML(desc), "</p>"))
   # })
 
-  # internal navigation links ----
+  # 3.ii.a internal links ----
   # observeEvent(input$link_tab_bar, {
   #   updateTabsetPanel(session, inputId = "my_tabs", selected = "tab_bar")
   # })
@@ -230,7 +234,6 @@ server <- function(input, output, session) {
   #   updateTabsetPanel(session, inputId = "my_tabs", selected = "tab_intro")
   # })
   
-  # tables ----
   # output$hist_table <- DT::renderDT({
   #   b <- if (!is.na(input$bins)) as.numeric(input$bins) else 10
   #   d <- filtered_data() |> dplyr::mutate(Bins = cut(measure, b)) |>
@@ -239,6 +242,8 @@ server <- function(input, output, session) {
   #                       options = list(pageLength = 10, searching = FALSE))
   #   return(dt)
   # })
+  
+  # 1.ii.a code table -----
   # output$bar_table <- DT::renderDT({
   #   d <- filtered_data() |> dplyr::group_by(Species) |> 
   #     dplyr::summarise(Count = n(), .groups = "drop")
