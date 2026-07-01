@@ -1,0 +1,188 @@
+# Author: Abby Stamm & Eric Kvale
+# Date: February 2026
+# Purpose: workshop script for R/Medicine 2026
+
+library(shiny)
+library(ggplot2)
+library(dplyr)
+data(iris)
+
+ui <- bslib::page_sidebar(
+  tags$title("Fun with irises"),
+  h1("Fun with irises: Learning accessibility"),
+
+  # shinya11y test
+  shinya11y::use_tota11y(),
+  
+  # 1.i language -----
+  # Add language at the top of the UI
+  # tags$html(lang = "en"),
+  
+  sidebar = bslib::sidebar(
+    selectInput("species",  
+                # 2.ii improve label -----
+                # label = "Choose one or all Iris species:", 
+                label = "Iris species:", 
+                choices = c("All", unique(as.character(iris$Species))),
+                selected = "All"),
+    selectInput("measure",
+                # 2.ii improve label -----
+                # label = "Select the measurement to filter on for the chart:", 
+                label = "Measure:", 
+                choices = names(iris)[1:4],
+                selected = names(iris)[1]),
+    uiOutput("select_measure"),
+    selectInput("bins", selectize = FALSE,
+                label = "Select the number of columns to display:",
+                choices = 1:20, selected = 10),
+),
+  
+  mainPanel(
+    tabsetPanel(id = "my_tabs", 
+                # dashboard instructions
+                tabPanel(title = "Introduction", value = "tab_intro", 
+                  p("This dashboard is designed to demonstrate some simple ways 
+                     to make your Shiny app more accessible. Here are a few  
+                     common issues to consider."),
+                  h3("Accessible sidebar"),
+                  tags$ul(
+                    tags$li("Is there a sitemap, table of contents, or other 
+                             easy to navigate list of elements?"),
+                    tags$li("Is the dashboard's primary language defined?"),
+                    tags$li("Are the filters in the sidebar relevant for the 
+                             currently selected tab?"),
+                    tags$li("Are the filters well defined?"),
+                    tags$li("Are the filters keyboard accessible?")),
+                  h3("Accessible charts"),
+                  tags$ul(
+                    tags$li("Do the chart colors contrast sufficiently?"),
+                    tags$li("Are the font size and spacing appropriate?"),
+                    tags$li("Do the title and axis labels exist? Are they easy 
+                             to read?"),
+                    tags$li("Does the alternate text exist and make sense?"),
+                    tags$li("Are there alternate ways to access chart data?"))
+                ),
+                tabPanel(title = "Barplot", value = "tab_bar", 
+                  # 2.i.b output description -----
+                  # htmlOutput("bar_desc"), 
+                  plotOutput("bar_plot"),
+                  # 1.ii.b output table -----
+                  # dataTableOutput("bar_table")
+                ),
+                tabPanel(title = "Histogram", value = "tab_hist", 
+                  # 2.i.b output description -----
+                  # htmlOutput("hist_desc"), 
+                  plotOutput("hist_plot"),
+                  # 1.ii.b output table -----
+                  # dataTableOutput("hist_table")
+                ),
+    )
+  )
+)
+ 
+server <- function(input, output, session) {
+  output$select_measure <- shiny::renderUI({
+    meas <- if (is.na(input$measure)) "Sepal.Length" else input$measure
+    i <- iris
+    i$measure <- i[, meas]
+    splitLayout(
+      textInput("range_min", label = HTML("Minimum<br>", meas, ":"),
+                placeholder = min(i$measure), value = min(i$measure)),
+      textInput("range_max", label = HTML("Maximum<br>", meas, ":"),
+                placeholder = max(i$measure), value = max(i$measure))
+    )
+  })
+  
+  filtered_data <- shiny::reactive({
+    if (!input$species == "All") {
+      d <- iris[which(iris$Species == input$species), ]
+    } else {
+      d <- iris
+    }
+    d$measure <- d[, input$measure]
+    d <- dplyr::filter(d, measure >= input$range_min,
+                       measure <= input$range_max)
+    return(d)
+  })
+  
+  output$hist_plot <- renderPlot({
+    d <- filtered_data()
+    b <- if (!is.na(input$bins)) input$bins else 30
+    bins <- seq(min(d$measure), max(d$measure), length.out = as.numeric(b) + 1)
+    hist(d$measure, breaks = bins, col = "#003865", border = "white",
+         xlab = input$measure, main = paste("Histogram of", input$measure),
+         xlim = c(min(d$measure), max(d$measure)))
+  },
+  # 1.iii alt text -----
+  # alt = reactive({
+  #   d <- filtered_data()
+  #   aria <- paste("Histogram of", input$measure, "in centimeters for", 
+  #                 input$species, "irises.", input$measure, "ranges from", 
+  #                 min(d$measure), "to", max(d$measure), "cm.",
+  #                 "Refer to the table below the chart for values displayed.")
+  #   return(aria)
+  # })
+  )
+  
+  output$bar_plot <- renderPlot({
+    d <- filtered_data() |> dplyr::group_by(Species) |> 
+         dplyr::summarise(Count = n(), .groups = "drop")
+    ggplot(data = d, aes(x = Species, y = Count)) +
+         geom_bar(stat = "identity", fill = "#003865") +
+         labs(title = "Frequency chart of iris species") +
+         theme_minimal() + 
+         theme(axis.text  = element_text(size = 14),
+               axis.title = element_text(size = 16), 
+               plot.title = element_text(size = 18))
+  },
+  # 1.iii alt text -----
+  # alt = reactive({
+  #   d <- filtered_data()
+  #   aria <- paste("Barplot of", input$species, "irises filtered on", 
+  #                 min(d$measure), "to", max(d$measure), input$measure, "cm.",
+  #                 "Refer to the table below the chart for values displayed.")
+  #   return(aria)
+  # })
+  )
+
+  # 1.ii.a code table -----
+  # output$hist_table <- DT::renderDT({
+  #   b <- if (!is.na(input$bins)) as.numeric(input$bins) else 10
+  #   d <- filtered_data() |> dplyr::mutate(Bins = cut(measure, b)) |>
+  #     dplyr::group_by(Bins) |> dplyr::summarise(Count = n(), .groups = "drop")
+  #   dt <- DT::datatable(d, rownames = FALSE, class = 'cell-border stripe',
+  #                       options = list(pageLength = 10, searching = FALSE))
+  #   return(dt)
+  # })
+  
+  # 1.ii.a code table -----
+  # output$bar_table <- DT::renderDT({
+  #   d <- filtered_data() |> dplyr::group_by(Species) |> 
+  #     dplyr::summarise(Count = n(), .groups = "drop")
+  #   dt <- DT::datatable(d, rownames = FALSE, class = 'cell-border stripe',
+  #                       options = list(paging = FALSE, searching = FALSE))
+  #   return(dt)
+  # })
+  
+  # 2.i.a chart description ----
+  # output$bar_desc <- shiny::renderText({
+  #   d <- filtered_data()
+  #   desc <- paste("This bar chart shows", input$species, 
+  #                 "irises filtered on", input$measure, "ranging from", 
+  #                 min(d$measure), "to", max(d$measure), "centimeters.")
+  #   return(paste("<p>", HTML(desc), "</p>"))
+  # })
+  
+  # 2.i.a chart description ----
+  # output$hist_desc <- shiny::renderText({
+  #   d <- filtered_data()
+  #   desc <- paste("This histogram shows", input$measure, "ranging from", 
+  #                 min(d$measure), "to", max(d$measure), "cm for", 
+  #                 input$species, "irises. The median is", 
+  #                 median(d$measure), "cm and the mean is", 
+  #                 round(mean(d$measure), digits = 2), "cm.")
+  #   return(paste("<p>", HTML(desc), "</p>"))
+  # })
+}
+
+shinyApp(ui = ui, server = server)
