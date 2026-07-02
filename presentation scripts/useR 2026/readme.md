@@ -1,5 +1,5 @@
 ---
-title: "Making dashboards accessible for keyboard and screen reader"
+title: "Make your Shiny dashboard screen reader friendly"
 format: 
   html:
     toc: true
@@ -19,16 +19,15 @@ when designing my own dashboards.
 
 What this demonstration does *not* cover:
 
-1. Font and color considerations to make your charts and text easier to read.
+1. Ensuring language, vocabulary, and messaging are audience appropriate.
+1. Testing for keyboard navigation.
+1. Testing for appropriate font and colors in charts.
 1. Using sound and texture to make your content more accessible. 
     For an example of how to implement the R packages
     [`tactileR`](https://github.com/jooyoungseo/tactileR) and 
     [`sonify`](https://cran.r-project.org/package=sonify), 
     see the code for my 
     [texture-sound app](https://github.com/ajstamm/shiny-a11y-app/tree/master/texture-sound).
-1. Making sure language, vocabulary, and messaging are appropriate for the 
-    intended audience.
-1. Testing for keyboard navigation.
 
 ## Files included
 

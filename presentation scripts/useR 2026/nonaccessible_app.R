@@ -1,6 +1,6 @@
 # Author: Abby Stamm & Eric Kvale
-# Date: February 2026
-# Purpose: workshop script for R/Medicine 2026
+# Date: July 2026
+# Purpose: workshop script for useR 2026
 
 library(shiny)
 library(ggplot2)
@@ -19,13 +19,13 @@ ui <- bslib::page_sidebar(
   # tags$html(lang = "en"),
   
   sidebar = bslib::sidebar(
-    selectInput("species",  
+    selectInput("species", selectize = FALSE,
                 # 2.ii improve label -----
                 # label = "Choose one or all Iris species:", 
                 label = "Iris species:", 
                 choices = c("All", unique(as.character(iris$Species))),
                 selected = "All"),
-    selectInput("measure",
+    selectInput("measure", selectize = FALSE,
                 # 2.ii improve label -----
                 # label = "Select the measurement to filter on for the chart:", 
                 label = "Measure:", 
