@@ -35,7 +35,7 @@ What this demonstration does *not* cover:
     Download this file if you want to practice adding the fixes described below to your own app.
 1. [Final accessible app](final_accessible_app.R): 
     This file already includes all of the fixes described below. Use it to check your work.
-1. [Abstract](useR_2026_abstract.qmd): 
+1. [Abstract](useR_2026_abstract.md): 
     This file contains the abstract and notes for the demonstration.
 1. [Introduction and conclusion slides](useR_2026_slides.pdf): 
     PDF of the introduction and conclusion slides.
